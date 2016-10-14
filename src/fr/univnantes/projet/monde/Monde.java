@@ -1,6 +1,5 @@
 package fr.univnantes.projet.monde;
 
-import java.util.ArrayList;
 import java.lang.String;
 
 import fr.univnantes.projet.Constante;
@@ -10,21 +9,21 @@ public class Monde
     /**
      * L'emplacement des choses sur une carte à deux dimensions du Monde
      */
-	private Joueur1[][] carte_;
+	private String[][] carte_;
 
 	/**
 	 * Constructeur
      */
-	public Monde(int taille)
+	public Monde()
 	{
-        carte_ = new Joueur1[Constante.N][Constante.N];
+        carte_ = new String[Constante.N-1][Constante.N-1];
 	}
 
 
 	/**
      * Accesseur
      */
-    public Joueur1[][] getCarte()
+    public String[][] getCarte()
     {
         return carte_;
     }
@@ -32,33 +31,44 @@ public class Monde
     /**
      * Mutateur
      */
-    public void setX(Joueur1[][] carte)
+    public void setX(String[][] carte)
     {
         carte_=carte;
     }
 
     public void remplirCase(Position position, Joueur1 joueur)
     {
-    	carte_[position.getX()][position.getY()]=joueur;
+    	carte_[position.getX()][position.getY()]=joueur.getPseudo();
     }
 
     /**
      * Initialise le Monde
      */
     /*public void creationDuMonde(){
-        creationPopulation();
+        creation();
         placementInitial();
     }*/
+
+    public void creation()
+    {
+        for(int i = 0;i<Constante.N;++i)
+        {
+            for(int j = 0;j<Constante.N ;++j)
+            {
+                carte_[i][j]=".";
+            }
+        }
+    }
 
     @Override
 	public String toString()
 	{
 		String str = "" ;
-		for(int i = 0;i<taille_;++i)
+		for(int i = 0;i<Constante.N;++i)
 		{
-			for(int j = 0;j<taille_ ;++j)
+			for(int j = 0;j<Constante.N ;++j)
 			{
-				str = str.concat(carte_[i][j].getPseudo());
+				str = str.concat(carte_[i][j]);
 			}
 			str = str.concat("\n");
 		}

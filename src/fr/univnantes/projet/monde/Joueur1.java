@@ -1,14 +1,13 @@
 package fr.univnantes.projet.monde;
 
 import java.awt.Color;
-import java.util.ArrayList;
 
 public class Joueur1
 {
 
 	private String pseudo_;
 	private Color couleur_;
-	private ArrayList<Position> chemin_;
+	//private ArrayList<Position> chemin_;
 
 	/**
 	 * Constructeur
@@ -16,8 +15,8 @@ public class Joueur1
 	public Joueur1(String pseudo, Color couleur)
 	{
 		pseudo_ = pseudo;
-		couleur_ = couleur_;
-		chemin_ = new ArrayList<Position>();
+		couleur_ = couleur;
+		//chemin_ = new ArrayList<Position>();
 
 	}
 

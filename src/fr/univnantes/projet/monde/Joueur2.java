@@ -1,3 +1,5 @@
+package fr.univnantes.projet.monde;
+
 import java.awt.Color;
 import java.util.ArrayList;
 

@@ -1,10 +1,11 @@
 package fr.univnantes.projet;
 
-import fr.univnantes.projet.ig.Fenetre;
-import fr.univnantes.projet.ig.Grille;
+//import fr.univnantes.projet.ig.Fenetre;
+//import fr.univnantes.projet.ig.Grille;
+import fr.univnantes.projet.monde.Joueur1;
 import fr.univnantes.projet.monde.Monde;
+import fr.univnantes.projet.monde.Position;
 
-import java.util.*;
 import java.awt.Color;
 
 /**
@@ -22,11 +23,14 @@ public class Application
 		//Création d'un monde vide
 		Monde monde = new Monde();
 		//Initialisation du monde
-		monde.creationDuMonde();
+		//monde.creationDuMonde();
 	
 		Joueur1 moi = new Joueur1("X", Color.red);
 		Joueur1 toi = new Joueur1("O", Color.blue);
-		monde.remplirCase(new Position(1,1), moi);
+		monde.remplirCase(new Position(0,0), moi);
+//		monde.remplirCase(new Position(0,1), moi);
+	//	monde.remplirCase(new Position(1,0), moi);
+		//monde.remplirCase(new Position(1,1), moi);
 		System.out.println(monde);
 
 	}

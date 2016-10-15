@@ -9,6 +9,6 @@ public class Constante {
 	 *  Dimensions de la grille
 	 *     - N lignes numérotées de 0 à N-1
 	 */
-	public static final int N = 2;
+	public static final int N = 5;
 
 }

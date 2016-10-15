@@ -1,8 +1,12 @@
 package fr.univnantes.projet.monde;
 
 import java.lang.String;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.univnantes.projet.Constante;
+
+import java.awt.Color;
 
 public class Monde
 {
@@ -16,7 +20,7 @@ public class Monde
      */
 	public Monde()
 	{
-        carte_ = new String[Constante.N-1][Constante.N-1];
+        carte_ = new String[Constante.N][Constante.N];
 	}
 
 
@@ -36,11 +40,86 @@ public class Monde
         carte_=carte;
     }
 
-    public void remplirCase(Position position, Joueur1 joueur)
+    public void colorerCase(Position position, Joueur1 joueur)
     {
-    	carte_[position.getX()][position.getY()]=joueur.getPseudo();
+    	if(carte_[position.getY()][position.getX()]==".")
+    		//if(carte_[position.getY()][position.getX()]==Color.white)
+    	{
+    		carte_[position.getY()][position.getX()]=joueur.getPseudo();
+    		//carte_[position.getY()][position.getX()]=joueur.getCouleur();
+    		miseAJourChemin(position,joueur);
+       	}
+    	else
+    	{
+    		boolean test = false;
+    		for(Chemin chemin : joueur.getLChemin())
+    		{
+    			
+    			for(Position autre : chemin.getClasse())
+    			{
+    				
+    				if(position.positionAdjacente(autre))
+    				{
+    					test = true;
+    					
+    				}
+    			}
+    		}
+       	}
     }
+    
+    public void miseAJourChemin(Position position, Joueur1 joueur)
+    {
+		int i = 0;
+		boolean test = false;
+		while(i<joueur.nbChemin() && test == false)
+		{
+			int j = 0;
+			Chemin chemin = joueur.getChemin(i);
+			while(j<chemin.nbElement() && test == false)
+			{
 
+				//System.out.println(i+ " "+j);
+				if(position.positionAdjacente(chemin.getElement(j)))
+				{
+					chemin.ajouterPosition(position);
+					test = true;
+				}
+				++j;
+			}
+			++i;
+		}
+		if(test == false)
+		{
+			joueur.ajouterChemin(new Chemin(position));
+			//ajouter un chemin avec la position
+		}
+		else
+		{
+			List<Chemin> copie = new ArrayList<Chemin>(joueur.getLChemin());
+			for(int k = i ; k<copie.size() ; ++k)
+			{
+				for (Position autre : joueur.getChemin(k).getClasse()) 
+				{
+					if(position.positionAdjacente(autre))
+					{
+						for(Position bis : joueur.getChemin(k).getClasse())
+						{
+							joueur.getChemin(i-1).ajouterPosition(bis);
+						}
+					
+						joueur.supprimerChemin(joueur.getChemin(k));
+					}
+				}
+			
+			}
+		}
+    }
+        
+    /*public Position donneCaseVideAleatoire(){
+    	
+    }*/
+    
     /**
      * Initialise le Monde
      */
@@ -48,7 +127,7 @@ public class Monde
         creation();
         placementInitial();
     }*/
-
+    
     public void creation()
     {
         for(int i = 0;i<Constante.N;++i)

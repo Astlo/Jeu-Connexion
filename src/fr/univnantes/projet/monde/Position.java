@@ -55,6 +55,39 @@ public class Position {
         y_=y;
     }
     
+    public boolean positionAdjacente(Position autre){
+    	boolean test;
+    	if(x_ == autre.getX()-1 || x_ == autre.getX() || x_ == autre.getX()+1)
+    	{
+    		if(y_ == autre.getY()-1 || y_ == autre.getY() || y_ == autre.getY()+1)
+    		{
+    			if(!positionEgale(autre))
+    			{
+    				test = true;
+    			}
+    			else
+    			{
+    				test = false;
+    			}
+    		}
+    		else
+    		{
+    			test = false;
+    		}
+    	}
+    	else
+    	{
+    		test = false;
+    	}
+
+		System.out.println(test);
+    	return test;
+    }
+    
+    public boolean positionEgale(Position autre){
+    	return x_ == autre.getX() && y_ == autre.getY();
+    }
+    
     @Override
 	public String toString(){
 		return "("+x_+","+y_+")";

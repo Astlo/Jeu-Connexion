@@ -79,8 +79,6 @@ public class Position {
     	{
     		test = false;
     	}
-
-		System.out.println(test);
     	return test;
     }
     

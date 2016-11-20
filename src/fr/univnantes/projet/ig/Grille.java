@@ -8,7 +8,6 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 
 import projet.Constante;
-import projet.monde.Monde;
 import projet.monde.Joueur;
 
 /* Grille de jeu affichant les cases colorées et à colorer */

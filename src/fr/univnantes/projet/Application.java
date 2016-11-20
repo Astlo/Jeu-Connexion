@@ -7,6 +7,7 @@ import fr.univnantes.projet.monde.Joueur1;
 import fr.univnantes.projet.monde.Monde;
 import fr.univnantes.projet.monde.Position;
 
+import java.util.Scanner;
 import java.awt.Color;
 
 /**
@@ -29,6 +30,23 @@ public class Application
 		
 		Joueur1 moi = new Joueur1("X", Color.red);
 		Joueur1 toi = new Joueur1("O", Color.blue);
+		/*int nbTour = 3;
+		Scanner sc = new Scanner(System.in);
+		for(int i = 0; i<nbTour;++i)
+		{
+			
+			System.out.println("Joueur 1 : Veuillez saisir x :");
+			int x = sc.nextInt();
+			System.out.println("Joueur 1 : Veuillez saisir y :");
+			int y = sc.nextInt();
+			monde.colorerCase(new Position(x,y), moi);
+			System.out.println("Joueur 2 : Veuillez saisir x :");
+			x = sc.nextInt();
+			System.out.println("Joueur 2 : Veuillez saisir y :");
+			y = sc.nextInt();
+			monde.colorerCase(new Position(x,y), toi);
+		}
+		sc.close();*/
 		monde.colorerCase(new Position(0,0), moi);
 		monde.colorerCase(new Position(0,1), toi);
 		monde.colorerCase(new Position(0,2), moi);
@@ -41,6 +59,9 @@ public class Application
 
 			System.out.println(chemin);
 		}
+		for(Chemin chemin : toi.getLChemin()){
 
+			System.out.println(chemin);
+		}
 	}
 }

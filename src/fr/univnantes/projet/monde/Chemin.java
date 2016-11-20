@@ -56,6 +56,25 @@ public class Chemin {
 		classe_.remove(position);
 	}
 	
+	public boolean cheminAdjacent(Chemin chemin, Position position)
+	{
+		boolean test = false;
+		for (Position autre : chemin.getClasse()) 
+		{
+			if(position.positionAdjacente(autre))
+			{
+				test = true;
+			}
+		}
+		return test;
+		
+	}
+	
+	public void cheminFusion(Chemin chemin, Position position)
+	{
+		classe_.addAll(chemin.getClasse());
+	}
+	
 	
 	@Override
 	public String toString(){

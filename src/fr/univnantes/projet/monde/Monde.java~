@@ -371,6 +371,14 @@ public class Monde
 		}
     }
         
+    public void genererCaseEtoile(Joueur j){
+
+	int x = (int)(Math.random() * 11);			// abscisse de la case étoilé
+	int y = (int)(Math.random() * 11);			// ordonné de la case étoilé
+
+	
+
+	}
     
 	public String toString()
 	{

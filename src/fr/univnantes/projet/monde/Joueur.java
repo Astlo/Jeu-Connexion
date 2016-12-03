@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Joueur 
+public  class Joueur 
 {
 	private String pseudo_;
 	private Color couleur_;

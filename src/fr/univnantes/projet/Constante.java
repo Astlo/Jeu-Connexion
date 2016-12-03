@@ -12,5 +12,10 @@ public class Constante {
 	public static final int N = 8;
 	
 	public static final int K = 2;
+	
+	/**
+	 * Un point (x,y) est affiché sur le pixel ((x+1)*Pix, (y+1)*Pix)
+	 */
+	public static final int Pix = 30;
 
 }

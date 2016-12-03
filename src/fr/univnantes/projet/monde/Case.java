@@ -122,21 +122,23 @@ public class Case {
 		return cpt;
 	}
 
-	public boolean caseAdjacent(Case autre)
+	/*public boolean caseAdjacent(Case autre)
 	{
     	boolean test = false;
     	if(position_.getX() == autre.getPosition().getX()-1 || position_.getX() == autre.getPosition().getX() || position_.getX() == autre.getPosition().getX()+1)
     	{
     		if(position_.getY() == autre.getPosition().getY()-1 || position_.getY() == autre.getPosition().getY() || position_.getY() == autre.getPosition().getY()+1)
     		{
-    			if(!positionEgale(autre))
+    			if(!caseEgale(autre))
     			{
     				test = true;
     			}
     		}
     	}
     	return test;	
-	}
+	}*/
+	
+	
 	
     public boolean caseEgale(Case autre)
     {
@@ -149,19 +151,44 @@ public class Case {
     	nbDescendant_ = nbDescendant_ + 1 + c.getNbDescendant();
     	c.setPere(this);
     }
-    
-    public void classe(Case autre)
+        
+    public Case classe()
     {
+    	Case racine;
     	if(pere_ != null)
     	{
-    		pere_.classe(autre);
+    		racine = pere_.classe();
+    		getPere().getFils().remove(this);
+    		setPere(racine);
     	}
     	else
     	{
-    		autre.getPere().getFils().remove(this);
-    		autre.setPere(this);
+    		racine = this;
     	}
-    	
+    	return racine;
     }
+    
+    public void Union(Case c)
+    {
+    	//vérifier la qu'ils sont pas dans la meme classe ou avant
+    	if(classe() != c.classe())
+    	{
+	    	if(nbDescendant_ > c.getNbDescendant())
+	    	{
+	    		c.setPere(pere_);
+	    		nbDescendant_ = nbDescendant_ + 1 + c.getNbDescendant();
+	    	}
+	    	else
+	    	{
+	    		pere_ = c.getPere();
+	    		c.setNbDescendant(nbDescendant_ + 1 + c.getNbDescendant());
+	    		
+	    	}
+    	}
+    }
+    
+	public String toString(){
+		return position_.toString();
+	}
 	
 }

@@ -10,6 +10,6 @@ public class ComparatorCase implements Comparator<Case> {
 	
 	@Override
 	public int compare(Case c1, Case c2) {
-		return Integer.compare(c2.getHauteurMax(), c1.getHauteurMax());
+		return Integer.compare(c2.getNbDescendant() , c1.getNbDescendant());
 	}
 }

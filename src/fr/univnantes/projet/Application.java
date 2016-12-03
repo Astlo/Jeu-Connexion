@@ -55,13 +55,6 @@ public class Application
 	//	monde.remplirCase(new Position(1,0), moi);
 		//monde.remplirCase(new Position(1,1), moi);
 		System.out.println(monde);
-		for(Chemin chemin : moi.getLChemin()){
 
-			System.out.println(chemin);
-		}
-		for(Chemin chemin : toi.getLChemin()){
-
-			System.out.println(chemin);
-		}
 	}
 }

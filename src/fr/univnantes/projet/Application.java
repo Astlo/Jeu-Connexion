@@ -20,26 +20,23 @@ public class Application
 	 */
 	public static void main(String[] args)
 	{
-		Joueur moi = new Joueur("X", Color.blue);
-		Joueur toi = new Joueur("O", Color.red);
+		Joueur moi = new Joueur("Keurl",Color.red);
+		Joueur toi = new Joueur("Astlo",Color.blue);
 		//Création d'un monde vide
 		Monde monde = new Monde(moi, toi);
 		//Initialisation du monde
-		//monde.creationDuMonde();
 		monde.creationDuMonde();
-		
+	
 		Grille grille = new Grille(Constante.N, monde);
 		
-		Fenetre fenetre = new Fenetre("Jeu  connexion",grille);
+		Fenetre fenetre = new Fenetre("Jeu  connexion",grille, monde);
 
+		System.out.println("c'est au joueur " + monde.getJoueur1().getPseudo() + " de jouer.");
+		while(monde.ScoreMax() != Constante.K && !moi.getAbandon() && !toi.getAbandon())
+		{
 			grille.dessiner();
-			
-
-			
-		
-		
-
-		//monde.affichage();
-
+		}
+		System.out.println("fin de la partie !");
+		return;
 	}
 }

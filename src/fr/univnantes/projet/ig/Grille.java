@@ -32,7 +32,6 @@ public class Grille extends JPanel {
 	 * Constructeur
 	 * @param N N+1 lignes et colonnes indicées de 0 à N
 	 * 
-	 * TODO : à compléter
 	 */
 	public Grille(int N, Monde monde) {
 		// dimensions pour les positions
@@ -89,10 +88,13 @@ public class Grille extends JPanel {
 				// Ici un petit carré de couleur blanche est affiché
 				// pour montrer que la position est libre
 
-				// TODO : afficher les cases colorées des joueurs là où elles se trouvent
-
 				g2d.setColor(monde_.getOneCase(x,y).getCouleur());
-				g2d.fillRect(px,py,3,3);
+				g2d.fillRect(px,py,28,28);
+				
+				if( monde_.getOneCase(x, y).getEtoile() ){
+					FontMetrics metrics = g.getFontMetrics();
+					g2d.drawString("*", px + (28 - metrics.stringWidth("*"))/2 ,py + (28 - metrics.stringWidth("*"))/2 + metrics.getAscent());
+
 			}
 		}
 	}

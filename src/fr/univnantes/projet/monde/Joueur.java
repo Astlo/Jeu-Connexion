@@ -45,5 +45,10 @@ public  class Joueur
 	{
 		composante_.add(c);
 	}
+	
+	public void supprimerComposante(Case c)
+	{
+		composante_.remove(c);
+	}
 
 }

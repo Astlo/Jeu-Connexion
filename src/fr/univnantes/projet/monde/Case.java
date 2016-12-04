@@ -112,15 +112,15 @@ public class Case {
 			cpt++;
 		}
 		
-		//if(fils_.size() != 0)
-		
+		if(fils_.size() != 0)
+		{
 			for(Case c : fils_)
 			{
 				
-				cpt = cpt + c.parcoursEtoile(cpt);
+				cpt = c.parcoursEtoile(cpt);
 
 			}
-		
+		}
 		return cpt;
 	}
 	
@@ -161,24 +161,6 @@ public class Case {
 			}
 		}
 	}
-
-	public boolean caseAdjacent(Case autre)
-	{
-    	boolean test = false;
-    	if(position_.getX() == autre.getPosition().getX()-1 || position_.getX() == autre.getPosition().getX() || position_.getX() == autre.getPosition().getX()+1)
-    	{
-    		if(position_.getY() == autre.getPosition().getY()-1 || position_.getY() == autre.getPosition().getY() || position_.getY() == autre.getPosition().getY()+1)
-    		{
-    			if(!caseEgale(autre))
-    			{
-    				test = true;
-    			}
-    		}
-    	}
-    	return test;	
-	}
-	
-	
 	
     public boolean caseEgale(Case autre)
     {
@@ -210,7 +192,7 @@ public class Case {
     	return racine;
     }
     
-    public void union(Case c)
+    public void union(Case c, Joueur joueur)
     {
     	//vérifier la qu'ils sont pas dans la meme classe ou avant
     	if(classe() != c.classe())
@@ -220,12 +202,14 @@ public class Case {
 	    		c.setPere(this);
 	    		fils_.add(c);
 	    		nbDescendant_ = nbDescendant_ + 1 + c.getNbDescendant();
+	    		joueur.supprimerComposante(c);
 	    	}
 	    	else
 	    	{
 	    		pere_ = c.getPere();
 	    		c.ajoutFils(this);
 	    		c.setNbDescendant(nbDescendant_ + 1 + c.getNbDescendant());
+	    		joueur.supprimerComposante(this);
 	    		
 	    	}
     	}

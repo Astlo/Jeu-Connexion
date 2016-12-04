@@ -158,7 +158,7 @@ public class Monde
 			{
 				c.union(casesCandidates.get(m).classe());
 			}
-			c.union(carte_[i][j]);
+			c.union(carte_[i][j], joueur);
 		}
 		else
 		{
@@ -166,21 +166,22 @@ public class Monde
 		}
 	}
 		
-    public void colorerCase(Position position, Joueur joueur)
+    public void colorerCase(Joueur joueur)
     {
+    	Scanner sc = new Scanner(System.in);		
+		int x = sc.nextInt();
+		int y = sc.nextInt();
+		Position position = new Position(x,y);
     	if(caseOccupee(position))
     	{
-			System.out.println("Cette case est déjà occupé, choissisez en une autre.");
-    		Scanner sc = new Scanner(System.in);		
-    		int x = sc.nextInt();
-    		int y = sc.nextInt();
-  
-    		colorerCase(new Position(x,y) ,joueur);
+			System.out.println("Cette case est déjà occupé, choissisez en une autre.");	
+
+    		colorerCase(joueur);
        	}
     	else
     	{
-       		carte_[position.getY()][position.getX()].setCouleur(joueur.getCouleur());
-			miseAJour(new Position(position.getX(), position.getY()), joueur2_);
+       		carte_[y][x].setCouleur(joueur.getCouleur());
+			miseAJour(position, joueur);
        	}
 }
 	

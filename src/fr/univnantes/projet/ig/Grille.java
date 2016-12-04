@@ -7,8 +7,9 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
-import projet.Constante;
-import projet.monde.Joueur;
+import fr.univnantes.projet.monde.Monde;
+import fr.univnantes.projet.Constante;
+import  fr.univnantes.projet.monde.Joueur;
 
 /* Grille de jeu affichant les cases colorées et à colorer */
 
@@ -21,6 +22,11 @@ public class Grille extends JPanel {
 	// Dimensions de la fenêtre d'affichage en pixels
 
 	private int cote_;
+	
+	/**
+	 * Le monde à afficher
+	 */
+	private Monde monde_;
 
 	/**
 	 * Constructeur
@@ -28,10 +34,12 @@ public class Grille extends JPanel {
 	 * 
 	 * TODO : à compléter
 	 */
-	public Grille(int N) {
+	public Grille(int N, Monde monde) {
 		// dimensions pour les positions
 		N_ = N;
 
+		monde_ = monde;
+		
 		// dimensions de la fenêtre
 		cote_ = Constante.Pix*(N+2);
 
@@ -63,7 +71,7 @@ public class Grille extends JPanel {
 		Graphics2D g2d = (Graphics2D)g;
 
 		// fond
-		Color couleur = new Color(80,80,80);
+		Color couleur = new Color(45,36,30);
 		g2d.setColor(couleur);
 		g2d.fillRect(0,0,cote_,cote_);
 
@@ -71,9 +79,9 @@ public class Grille extends JPanel {
 		g2d.setXORMode(couleur);
 		
 		// la grille et les choses
-		for (int x=0; x<=N_; ++x) {
+		for (int x=0; x<N_; ++x) {
 			int px = (x+1)*Constante.Pix;
-			for (int y=0; y<=N_; ++y) {
+			for (int y=0; y<N_; ++y) {
 				int py = (y+1)*Constante.Pix;
 				
 				// Affichage pour la position (x,y) sur le pixel (px,py)
@@ -83,8 +91,8 @@ public class Grille extends JPanel {
 
 				// TODO : afficher les cases colorées des joueurs là où elles se trouvent
 
-				g2d.setColor(Color.WHITE);
-				g2d.fillRect(px,py,3,3);
+				g2d.setColor(monde_.getOneCase(x,y).getCouleur());
+				g2d.fillRect(px,py,28,28);
 			}
 		}
 	}

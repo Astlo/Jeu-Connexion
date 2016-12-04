@@ -158,6 +158,7 @@ public class Case {
     	if(pere_ != null)
     	{
     		racine = pere_.classe();
+    		getPere().setNbDescendant(getPere().getNbDescendant() - nbDescendant_);
     		getPere().getFils().remove(this);
     		setPere(racine);
     	}

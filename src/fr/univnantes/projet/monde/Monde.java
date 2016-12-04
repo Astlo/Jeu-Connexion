@@ -92,7 +92,7 @@ public class Monde
 			}while(caseOccupee(new Position(colonne, ligne)));
 			carte_[ligne][colonne].setCouleur(joueur1_.getCouleur()); 
 			carte_[ligne][colonne].estEtoile();
-			//miseAJour(new Position(colonne, ligne));
+			miseAJour(new Position(colonne, ligne));
 			//joueur1_.ajouterComposante(carte_[ligne][colonne]);
 						
 			do
@@ -102,7 +102,7 @@ public class Monde
 			}while(caseOccupee(new Position(colonne2, ligne2)));
 			carte_[ligne2][colonne2].setCouleur(joueur2_.getCouleur()); 
 			carte_[ligne2][colonne2].estEtoile();
-			//miseAJour(new Position(colonne, ligne));
+			miseAJour(new Position(colonne, ligne));
 			//joueur2_.ajouterComposante(carte_[ligne][colonne]);
 		}
 	}
@@ -110,23 +110,31 @@ public class Monde
 	public void miseAJour(Position position)
 	{
 		int i = position.getY();
-		int j = position.getI();
+		int j = position.getX();
 		List<Case> casesCandidates = new ArrayList<Case>();
 		
 		for(int k = i-1 ; k <= i+1 ; k++ )
 		{
 			for(int l = j-1 ; l <= j+1 ; l++ )
 			{
-				if(carte_[k][l].getCouleur() == carte_[i][j].getCouleur() && i != k && j != l){
-					casesCandidates.add(carte_[k][l]);
+				if(k >= 0 && l >= 0 && k < Constante.N && l < Constante.N)
+				{
+					if(carte_[k][l].getCouleur() == carte_[i][j].getCouleur() && i != k && j != l)
+					{
+						casesCandidates.add(carte_[k][l]);
+					}
+					
 				}
 			}
 		}
-		Collections.sort(casesCandidates, new ComparatorCase());
-		Case c = casesCandidates.get(0);
-		for(int m = 1 ; m < casesCandidates.size() ; m++)
+		if(!casesCandidates.isEmpty())
 		{
-			c.classe();
+			Collections.sort(casesCandidates, new ComparatorCase());
+			Case c = casesCandidates.get(0);
+			for(int m = 1 ; m < casesCandidates.size() ; m++)
+			{
+				c.classe();
+			}
 		}
 	}
 	

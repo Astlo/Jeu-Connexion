@@ -31,16 +31,10 @@ public class Application
 		Grille grille = new Grille(Constante.N, monde);
 		
 		Fenetre fenetre = new Fenetre("Jeu  connexion",grille);
-		for (int i = 1; i <100; i++) {
-			try {
-				Thread.sleep(10000);
-			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		
 			grille.dessiner();
 			
-		}
+		
 			
 		
 		

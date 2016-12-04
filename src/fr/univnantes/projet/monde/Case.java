@@ -89,18 +89,14 @@ public class Case {
 	
 	public void parcoursPrefixe()
 	{
-
 		System.out.println(position_.toString());
-
-		if(fils_.size() != 0)
+		//if(fils_.size() != 0)
+		for(Case c : fils_)
 		{
-			for(Case c : fils_){
-				
-				c.parcoursPrefixe();
-
-			}
+			c.parcoursPrefixe();
 		}
 	}
+
 
 	public int parcoursEtoile(int cpt)
 	{
@@ -109,15 +105,15 @@ public class Case {
 			cpt++;
 		}
 		
-		if(fils_.size() != 0)
-		{
+		//if(fils_.size() != 0)
+		
 			for(Case c : fils_)
 			{
 				
-				c.parcoursEtoile(cpt);
+				cpt = cpt + c.parcoursEtoile(cpt);
 
 			}
-		}
+		
 		return cpt;
 	}
 	
@@ -127,7 +123,6 @@ public class Case {
 		if(fils_.size()>0){
 			
 			for(Case fils : fils_){
-				System.out.println("wut");
 
 				fils.analysePeripherieComposante(visitee,peripherie,inaccessible,carte);
 				
@@ -159,28 +154,11 @@ public class Case {
 		}
 	}
 
-
-	public boolean caseAdjacent(Case autre)
-	{
-    	boolean test = false;
-    	if(position_.getX() == autre.getPosition().getX()-1 || position_.getX() == autre.getPosition().getX() || position_.getX() == autre.getPosition().getX()+1)
-    	{
-    		if(position_.getY() == autre.getPosition().getY()-1 || position_.getY() == autre.getPosition().getY() || position_.getY() == autre.getPosition().getY()+1)
-    		{
-    			if(!positionEgale(autre))
-    			{
-    				test = true;
-    			}
-    		}
-    	}
-    	return test;	
-	}
-
 	public void ajoutFils(Case c)
 	{
 
 		fils_.add(c);
-		nbDescendant_ = nbDescendant_ + 1 + c.getNbDescendant();
+		//nbDescendant_ = nbDescendant_ + 1 + c.getNbDescendant();
 		c.setPere(this);
 
 	}
@@ -193,6 +171,7 @@ public class Case {
     		getPere().setNbDescendant(getPere().getNbDescendant() - nbDescendant_);
     		getPere().getFils().remove(this);
     		setPere(racine);
+    		racine.ajoutFils(this);
     	}
     	else
     	{
@@ -201,26 +180,25 @@ public class Case {
     	return racine;
     }
     
-    public void Union(Case c)
+    public void union(Case c)
     {
     	//vérifier la qu'ils sont pas dans la meme classe ou avant
     	if(classe() != c.classe())
     	{
 	    	if(nbDescendant_ > c.getNbDescendant())
 	    	{
-	    		c.setPere(pere_);
+	    		c.setPere(this);
+	    		fils_.add(c);
 	    		nbDescendant_ = nbDescendant_ + 1 + c.getNbDescendant();
 	    	}
 	    	else
 	    	{
 	    		pere_ = c.getPere();
+	    		c.ajoutFils(this);
 	    		c.setNbDescendant(nbDescendant_ + 1 + c.getNbDescendant());
 	    		
 	    	}
     	}
     }
-    public boolean positionEgale(Case autre){
-    	return position_.getX() == autre.getPosition().getX() && position_.getY() == autre.getPosition().getY();
-    }
-	
+    
 }

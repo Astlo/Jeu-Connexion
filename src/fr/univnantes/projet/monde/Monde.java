@@ -18,6 +18,7 @@ public class Monde
 	private Case[][] carte_;
 	private Joueur joueur1_;
 	private Joueur joueur2_;
+	private int numTour_;
 
 	/**
 	 * Constructeur
@@ -27,6 +28,7 @@ public class Monde
         carte_ = new Case[Constante.N][Constante.N];
         joueur1_ = joueur1;
         joueur2_ = joueur2;
+        numTour_ = 0;
 	}
 
 
@@ -37,6 +39,14 @@ public class Monde
 		return joueur1_;
 		
 	}
+	
+	public Joueur getj2(){
+		
+		return joueur2_;
+		
+	}
+	
+	
     public Case[][] getCarte()
     {
         return carte_;
@@ -81,7 +91,7 @@ public class Monde
 	}
 	
 	/**
-	 * Initialise le dÃ©but du jeu
+	 * Initialise le debut du jeu
 	 */
 	public void placementInitial() {
 		int ligne, ligne2, colonne, colonne2;
@@ -95,7 +105,7 @@ public class Monde
 			}while(caseOccupee(new Position(colonne, ligne)));
 			carte_[ligne][colonne].setCouleur(joueur1_.getCouleur()); 
 			carte_[ligne][colonne].estEtoile();
-			miseAJour(new Position(colonne, ligne));
+			miseAJour(new Position(colonne, ligne), joueur1_);
 			
 						
 			do
@@ -105,12 +115,11 @@ public class Monde
 			}while(caseOccupee(new Position(colonne2, ligne2)));
 			carte_[ligne2][colonne2].setCouleur(joueur2_.getCouleur()); 
 			carte_[ligne2][colonne2].estEtoile();
-			miseAJour(new Position(colonne, ligne));
-			
+			miseAJour(new Position(colonne2, ligne2), joueur2_);			
 		}
 	}
 	
-	public void miseAJour(Position position)
+	public void miseAJour(Position position, Joueur joueur)
 	{
 		int i = position.getY();
 		int j = position.getX();
@@ -122,9 +131,12 @@ public class Monde
 			{
 				if(k >= 0 && l >= 0 && k < Constante.N && l < Constante.N)
 				{
-					if(carte_[k][l].getCouleur() == carte_[i][j].getCouleur() && i != k && j != l)
+					if(carte_[k][l].getCouleur() == carte_[i][j].getCouleur())
 					{
-						casesCandidates.add(carte_[k][l]);
+						if(i != k || j != l)
+						{
+							casesCandidates.add(carte_[k][l]);
+						}
 					}
 					
 				}
@@ -133,34 +145,44 @@ public class Monde
 		if(!casesCandidates.isEmpty())
 		{
 			Collections.sort(casesCandidates, new ComparatorCase());
-			Case c = casesCandidates.get(0);
+			Case c = casesCandidates.get(0);			
 			for(int m = 1 ; m < casesCandidates.size() ; m++)
 			{
-				c.classe();
+				c.union(casesCandidates.get(m).classe());
 			}
+			c.union(carte_[i][j]);
+		}
+		else
+		{
+			joueur.ajouterComposante(carte_[i][j]);
 		}
 	}
 	
     
-    public void colorerCase(Position position, Joueur joueur)
+    public void colorerCase(Joueur joueur)
     {
+    	Scanner c = new Scanner(System.in);
+    	System.out.println("rentrez les coordonnées de la case que vous souhaitez colorier :");
+		int x = c.nextInt();
+		int y = c.nextInt();
+		Position position = new Position(x,y);
     	if(caseOccupee(position))
     	{
-    		System.out.println("Cette case est dÃ©jÃ  occupÃ©e, choissisez en une autre.");
-    		Scanner c = new Scanner(System.in);		
-    		int x = c.nextInt();
-    		int y = c.nextInt();
+    		System.out.println("Cette case est déja  occupée, choissisez en une autre.");
+    		
   
-    		colorerCase(new Position(x,y) ,joueur);
+    		colorerCase(joueur);
        	}
     	else
     	{
        		carte_[position.getY()][position.getX()].setCouleur(joueur.getCouleur());
+       		miseAJour(new Position(position.getX(), position.getY()), joueur);
        	}
     }
 	
 	public void afficheComposante()
-	{
+	{	
+		System.out.println("Entrez les coordonnées de la case dont vous souhaitez afficher la composante :");
 		Scanner c = new Scanner(System.in);		
 		int x = c.nextInt();
 		int y = c.nextInt();
@@ -186,10 +208,10 @@ public class Monde
 		Scanner sc = new Scanner(System.in);
 		int x = sc.nextInt();
 		int y = sc.nextInt();
-		Case case1 = carte_[x][y];
+		Case case1 = carte_[y][x];
 		x = sc.nextInt();
 		y = sc.nextInt();
-		Case case2 = carte_[x][y];
+		Case case2 = carte_[y][x];
 		sc.close();
 		
 		if(case1.getCouleur() == case2.getCouleur())
@@ -199,7 +221,7 @@ public class Monde
 			{
 				System.out.println("il existe un chemin");
 			} else {
-				System.out.println("il sont pas reliÃ©");
+				System.out.println("il sont pas relié");
 			}
 
 		} else {
@@ -208,7 +230,7 @@ public class Monde
 		
 	}
 
-	// gros boulot Ã  finir Inondation demander Ã  Ivan en cas d'oublie
+	
 	public int relierCasesMin()
 	{
 		// variables
@@ -372,12 +394,12 @@ public class Monde
 
 	c = c.getRacine();			// en O(h(c1))
 
-	return c.parcoursEtoile(cpt);  // en tÃªta de n avec n le nombre de noeuds
+	return c.parcoursEtoile(cpt);  // en teta de n avec n le nombre de noeuds
 									// de la composante
 	
 	}
 
-	public void afficherScores()
+	public void afficheScores()
 	{
 
 		System.out.println("Score joueur 1 :");
@@ -394,7 +416,7 @@ public class Monde
 			}
 		}
 
-		System.out.println( score1 + " Ã©toiles reliÃ©es max");
+		System.out.println( score1 + " étoiles reliées max");
 
 
 		System.out.println("Score joueur 2 :");
@@ -412,14 +434,59 @@ public class Monde
 			}
 			
 		}
-
-		System.out.println( score2 + " Ã©toiles reliÃ©es max");
+		
+		System.out.println( score2 + " étoiles reliées max");
 	}
 
-	public boolean relieComposantes(Color couleur){
+	public int ScoreMax(){
+		int score1 = 0;
+
+		for (Case c : joueur1_.getComposante()){
+			
+			int score = nombreEtoiles(c);
+
+			if(score1 < score ){
+
+				score1 = score;
+
+			}
+		}
+
+		int score2 = 0;
+
+		for (Case c : joueur2_.getComposante()){
+
+			int score = nombreEtoiles(c);
+
+			if(score2 < score ){
+
+				score2 = score;
+
+			}			
+		}
+		return Math.max(score1,score2);
+	}
 	
+
+	
+	public boolean relieComposantes(){
+
 	int liaisons = 0;
-	Scanner c = new Scanner(System.in);		
+	
+	Color couleur = Color.blue;
+	
+	System.out.println("Ecrivez la couleur test de la case (la couleur par défaut est bleue si votre entrée n'est pas valide) :");
+	Scanner c = new Scanner(System.in);
+	String transit = c.next();
+	
+	if(transit == "blue" || transit == "bleu"){
+		couleur = Color.blue;
+	} else
+	if (transit == "red" || transit == "rouge"){
+		
+		couleur = Color.red;
+	}
+	System.out.println("Indiquez les coordonnées de la case choisie pour le test :");
 	int x = c.nextInt();
 	int y = c.nextInt();
 
@@ -447,24 +514,6 @@ public class Monde
     	return carte_[position.getY()][position.getX()].getCouleur() != Color.white;
     }
 
-    
-    public void miseAJourC(Case c, Joueur joueur)
-    {
-    	for(int i = c.getPosition().getX()-1; i<c.getPosition().getX()+1; ++i)
-    	{
-    		for(int j = c.getPosition().getY()-1; j<c.getPosition().getY()+1; ++j)
-        	{
-    			if(i < 0 || j < 0 || i >= Constante.N || j >= Constante.N)
-    			{
-    				if(carte_[j][i].getCouleur() == c.getCouleur() && carte_[j][i] != c)
-    				{
-    					
-    				}
-    			}
-        	}
-    	}
-    }   
-	
 	public String affichage(){
 		String str = "" ;
 		for(int i = 0;i<Constante.N;++i)
@@ -476,6 +525,18 @@ public class Monde
 			str = str.concat("\n");
 		}
 		return str;
+		
+	}
+
+
+	public int getNumTour() {
+	
+		return numTour_;
+	}
+	
+	public void setNumTour(int newNumTour) {
+		
+		numTour_ = newNumTour;
 		
 	}
 		

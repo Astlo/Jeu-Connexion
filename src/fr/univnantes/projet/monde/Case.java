@@ -52,6 +52,12 @@ public class Case {
 	{
 		return nbDescendant_;
 	}
+	
+	public void setNbDescendant(int nbDescendant) 
+	{
+		nbDescendant_ = nbDescendant;
+	}
+	
 	public Case getRacine()
 	{
 		Case parcours = this;
@@ -178,7 +184,41 @@ public class Case {
 		c.setPere(this);
 
 	}
-	
+    public Case classe()
+    {
+    	Case racine;
+    	if(pere_ != null)
+    	{
+    		racine = pere_.classe();
+    		getPere().setNbDescendant(getPere().getNbDescendant() - nbDescendant_);
+    		getPere().getFils().remove(this);
+    		setPere(racine);
+    	}
+    	else
+    	{
+    		racine = this;
+    	}
+    	return racine;
+    }
+    
+    public void Union(Case c)
+    {
+    	//vérifier la qu'ils sont pas dans la meme classe ou avant
+    	if(classe() != c.classe())
+    	{
+	    	if(nbDescendant_ > c.getNbDescendant())
+	    	{
+	    		c.setPere(pere_);
+	    		nbDescendant_ = nbDescendant_ + 1 + c.getNbDescendant();
+	    	}
+	    	else
+	    	{
+	    		pere_ = c.getPere();
+	    		c.setNbDescendant(nbDescendant_ + 1 + c.getNbDescendant());
+	    		
+	    	}
+    	}
+    }
     public boolean positionEgale(Case autre){
     	return position_.getX() == autre.getPosition().getX() && position_.getY() == autre.getPosition().getY();
     }

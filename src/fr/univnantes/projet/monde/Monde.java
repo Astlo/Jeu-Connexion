@@ -2,14 +2,15 @@ package fr.univnantes.projet.monde;
 
 import java.lang.String;
 import java.util.ArrayList;
-//import java.util.List;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 import fr.univnantes.projet.Constante;
 
 import java.awt.Color;
 
-public class Monde
+public class Monde 
 {
     /**
      * L'emplacement des joueurs sur une carte à deux dimensions du Monde
@@ -32,6 +33,10 @@ public class Monde
 	/**
      * Accesseur
      */
+	public Joueur getj1(){
+		return joueur1_;
+		
+	}
     public Case[][] getCarte()
     {
         return carte_;
@@ -42,6 +47,10 @@ public class Monde
     	return carte_[position.getY()][position.getX()];
     }
 
+    public Case getOneCase(int x, int y)
+	{
+		return carte_[y][x];
+	}
     /**
      * Mutateur
      */
@@ -82,65 +91,67 @@ public class Monde
 			{
 				ligne = (int)(Math.random() * (Constante.N));
 				colonne = (int)(Math.random() * (Constante.N));
-			}while(caseOccupee(new Position(ligne, colonne)));
+				
+			}while(caseOccupee(new Position(colonne, ligne)));
 			carte_[ligne][colonne].setCouleur(joueur1_.getCouleur()); 
 			carte_[ligne][colonne].estEtoile();
+			miseAJour(new Position(colonne, ligne));
 			
-			joueur1_.ajouterComposante(carte_[ligne][colonne]);
 						
 			do
 			{
 				ligne2 = (int)(Math.random() * (Constante.N));
 				colonne2 = (int)(Math.random() * (Constante.N));
-			}while(caseOccupee(new Position(ligne2, colonne2)));
-			carte_[ligne][colonne].setCouleur(joueur2_.getCouleur()); 
-			carte_[ligne][colonne].estEtoile();
-			joueur2_.ajouterComposante(carte_[ligne][colonne]);
+			}while(caseOccupee(new Position(colonne2, ligne2)));
+			carte_[ligne2][colonne2].setCouleur(joueur2_.getCouleur()); 
+			carte_[ligne2][colonne2].estEtoile();
+			miseAJour(new Position(colonne, ligne));
+			
 		}
 	}
 	
-/*	public boolean aCaseAdjacent()
+	public void miseAJour(Position position)
 	{
-		boolean test = false;
+		int i = position.getY();
+		int j = position.getX();
+		List<Case> casesCandidates = new ArrayList<Case>();
 		
-		for(int i = 0 ; i < Constante.N ; i++ )
+		for(int k = i-1 ; k <= i+1 ; k++ )
 		{
-			for(int j = 0 ; j < Constante.N ; j++ )
+			for(int l = j-1 ; l <= j+1 ; l++ )
 			{
-				if(carte_[i][j]){
+				if(k >= 0 && l >= 0 && k < Constante.N && l < Constante.N)
+				{
+					if(carte_[k][l].getCouleur() == carte_[i][j].getCouleur() && i != k && j != l)
+					{
+						casesCandidates.add(carte_[k][l]);
+					}
 					
 				}
-				carte_[i][j] = new Case(new Position(i,j));
 			}
 		}
-		
-		return true;
+		if(!casesCandidates.isEmpty())
+		{
+			Collections.sort(casesCandidates, new ComparatorCase());
+			Case c = casesCandidates.get(0);
+			for(int m = 1 ; m < casesCandidates.size() ; m++)
+			{
+				c.classe();
+			}
+		}
 	}
 	
     
-    public void choixCase(Position position, Joueur joueur)
-    {
-    	if(caseOccupee(position))
-    	{
-    		System.out.println("Cette case est deja� occup�, choissisez en une autre.");
-    		// demandez autre position
-    		Position autre;
-    		choixCase(autre, joueur);
-    	}
-        else
-        {
-    		colorerCase(position, joueur);
-    		joueur.miseAJourChemin(carte_[position.getX()][position.getY()]);
-       	}
-    }*/
-
     public void colorerCase(Position position, Joueur joueur)
     {
     	if(caseOccupee(position))
     	{
     		System.out.println("Cette case est déjà occupée, choissisez en une autre.");
-    		// demandez autre position
-    		//colorerCase(autre ,joueur);
+    		Scanner c = new Scanner(System.in);		
+    		int x = c.nextInt();
+    		int y = c.nextInt();
+  
+    		colorerCase(new Position(x,y) ,joueur);
        	}
     	else
     	{
@@ -170,37 +181,31 @@ public class Monde
 	
 	}
 
-	public boolean existeCheminCases(Color couleur){
-
-	Scanner sc = new Scanner(System.in);		
-	int x = sc.nextInt();
-	int y = sc.nextInt();
-
-	Case c1 = carte_[y][x];
-	
-	x = sc.nextInt();
-	y = sc.nextInt();
-
-	Case c2 = carte_[y][x];
-	
-	sc.close();
-	
-	if(c2.getCouleur() == couleur && c1.getCouleur() == couleur)
+	public void existeCheminCases()
 	{
-
-		if( c1.getRacine().equals(c2.getRacine()) )
+		Scanner sc = new Scanner(System.in);
+		int x = sc.nextInt();
+		int y = sc.nextInt();
+		Case case1 = carte_[x][y];
+		x = sc.nextInt();
+		y = sc.nextInt();
+		Case case2 = carte_[x][y];
+		sc.close();
+		
+		if(case1.getCouleur() == case2.getCouleur())
 		{
-			return true;
+
+			if( case1.getRacine().equals(case2.getRacine()) )
+			{
+				System.out.println("il existe un chemin");
+			} else {
+				System.out.println("il sont pas relié");
+			}
+
 		} else {
-
-			return false;
+			System.out.println("ça appartient a aucune composante");
 		}
-
-	} else {
-			
-		return false;
-
-	}
+		
 	}
 
 	// gros boulot à finir Inondation demander à Ivan en cas d'oublie
@@ -441,6 +446,7 @@ public class Monde
     {
     	return carte_[position.getY()][position.getX()].getCouleur() != Color.white;
     }
+
     
     public void miseAJourC(Case c, Joueur joueur)
     {
@@ -457,62 +463,20 @@ public class Monde
     			}
         	}
     	}
-    }
-    
-    
-    
- /*   public void miseAJourChemin(Position position, Joueur1 joueur)
-    {
-		int i = 0;
-		boolean test = false;
-		while(i<joueur.nbChemin() && test == false)
-		{
-			int j = 0;
-			Chemin chemin = joueur.getChemin(i);
-			while(j<chemin.nbElement() && test == false)
-			{
-
-				//System.out.println(i+ " "+j);
-				if(position.positionAdjacente(chemin.getElement(j)))
-				{
-					chemin.ajouterPosition(position);
-					test = true;
-				}
-				++j;
-			}
-			++i;
-		}
-		if(test == false)
-		{
-			joueur.ajouterChemin(new Chemin(position));
-			//ajouter un chemin avec la position
-		}
-		else
-		{
-			List<Chemin> copie = new ArrayList<Chemin>(joueur.getLChemin());
-			for(int k = i ; k<copie.size() ; ++k)
-			{
-				if(joueur.getChemin(i-1).cheminAdjacent(joueur.getChemin(k), position))
-				{
-					joueur.getChemin(i-1).cheminFusion(joueur.getChemin(k), position);
-					joueur.supprimerChemin(joueur.getChemin(k));
-				}			
-			}
-		}
-    }*/
-        
-    
-	public String toString()
-	{
+    }   
+	
+	public String affichage(){
 		String str = "" ;
 		for(int i = 0;i<Constante.N;++i)
 		{
 			for(int j = 0;j<Constante.N ;++j)
 			{
-				str = str.concat(carte_[j][i].getPosition().toString());
+				str = str.concat(carte_[i][j].getPosition().toString());
 			}
 			str = str.concat("\n");
 		}
 		return str;
+		
 	}
+		
 }

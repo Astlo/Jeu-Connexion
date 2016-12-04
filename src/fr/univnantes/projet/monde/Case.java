@@ -2,6 +2,9 @@ package fr.univnantes.projet.monde;
 
 import java.awt.Color;
 import java.util.List;
+
+import fr.univnantes.projet.Constante;
+
 import java.util.ArrayList;
 
 public class Case {
@@ -45,7 +48,10 @@ public class Case {
 	public void estEtoile() {
 		etoile_ = true;
 	}
-	
+	public int getNbDescendant()
+	{
+		return nbDescendant_;
+	}
 	public Case getRacine()
 	{
 		Case parcours = this;
@@ -107,6 +113,44 @@ public class Case {
 			}
 		}
 		return cpt;
+	}
+	
+	public void analysePeripherieComposante(boolean[][] visitee, ArrayList<Case> peripherie, boolean[][] inaccessible,Case[][] carte)
+	{
+		visitee[position_.getY()][position_.getX()] = true;
+		if(fils_.size()>0){
+			
+			for(Case fils : fils_){
+				System.out.println("wut");
+
+				fils.analysePeripherieComposante(visitee,peripherie,inaccessible,carte);
+				
+			}		
+		}
+		
+		for (int i = -1; i < 2; ++i)
+		{
+			for( int j = -1; j < 2; ++j)
+			{	
+				int x1 = position_.getX()+i; // abscisse de la case adjacente
+				int y1 = position_.getY()+j; // ordonnée de la case adjacente
+				
+				// on analyse la périphérie de chaque case de la composante
+				if((x1 == position_.getX() && y1 == position_.getY())){
+				} else
+				if((x1 >= 0) && (y1>=0) && (x1 <=Constante.N-1) && (y1<=Constante.N-1) && !visitee[y1][x1] && !inaccessible[y1][x1]){
+					
+					Case adj = carte[y1][x1]; // Case adjacente en cours d'analyse
+					if(adj.getCouleur() == Color.white && !visitee[y1][x1]){
+						visitee[y1][x1] = true;
+						peripherie.add(adj);
+						
+					} else { //optimisable en n'ajoutant pas les cases déjà visitées... et encore la conditionnelle pourrait couter plus que l'opération
+						inaccessible[y1][x1] = true;
+					}
+				}
+			}
+		}
 	}
 
 

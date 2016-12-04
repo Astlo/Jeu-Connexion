@@ -19,9 +19,10 @@ public class Application
 	 * Point d'entrée du programme exécutable
 	 * @param args Paramètre non utilisé
 	 */
-	public static int nbTours;
+	
 	public static void main(String[] args)
 	{
+
 		Joueur moi = new Joueur("Keurl",Color.red);
 		Joueur toi = new Joueur("Astlo",Color.blue);
 		//Création d'un monde vide
@@ -32,11 +33,16 @@ public class Application
 		
 		Grille grille = new Grille(Constante.N, monde);
 		
-		Fenetre fenetre = new Fenetre("Jeu  connexion",grille);
-		
+		Fenetre fenetre = new Fenetre("Jeu  connexion",grille, monde);
+
+		System.out.println("c'est au joueur " + monde.getj1().getPseudo() + " de jouer.");
+		while(monde.ScoreMax() != Constante.K && !moi.getAbandon() && !toi.getAbandon()){
+			
+			 
 			grille.dessiner();
-
-		System.out.println(monde.affichage());
-
+			
+		}
+		System.out.println("fin de la partie !");
+		return;
 	}
 }

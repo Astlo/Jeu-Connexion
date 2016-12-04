@@ -4,12 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 
 import javax.swing.JPanel;
 
 import fr.univnantes.projet.monde.Monde;
 import fr.univnantes.projet.Constante;
-import  fr.univnantes.projet.monde.Joueur;
+//import fr.univnantes.projet.monde.Joueur;
 
 /* Grille de jeu affichant les cases colorées et à colorer */
 
@@ -95,8 +96,8 @@ public class Grille extends JPanel {
 					FontMetrics metrics = g.getFontMetrics();
 					g2d.drawString("*", px + (28 - metrics.stringWidth("*"))/2 ,py + (28 - metrics.stringWidth("*"))/2 + metrics.getAscent());
 
+				}
 			}
 		}
 	}
-
 }

@@ -18,6 +18,7 @@ public class Monde
 	private Case[][] carte_;
 	private Joueur joueur1_;
 	private Joueur joueur2_;
+	private int numTour_;
 
 	/**
 	 * Constructeur
@@ -27,6 +28,7 @@ public class Monde
 		carte_ = new Case[Constante.N][Constante.N+2];
 		joueur1_ = joueur1;
 		joueur2_ = joueur2;
+		numTour_ = 0;
 	}
 
 
@@ -76,6 +78,16 @@ public class Monde
 	{
 		joueur2_ = joueur2;
 	}
+	
+	public int getNumTour() {
+		return numTour_;
+	}
+
+
+	public void setNumTour(int numTour) {
+		numTour_ = numTour;
+	}
+
 
 
 	/**
@@ -156,7 +168,7 @@ public class Monde
 			Case c = casesCandidates.get(0);			
 			for(int m = 1 ; m < casesCandidates.size() ; m++)
 			{
-				c.union(casesCandidates.get(m).classe());
+				c.union(casesCandidates.get(m).classe(), joueur);
 			}
 			c.union(carte_[i][j], joueur);
 		}
@@ -439,6 +451,35 @@ public class Monde
 		System.out.println( score2 + " étoiles reliées max");
 	}
 	
+	public int ScoreMax(){
+		int score1 = 0;
+
+		for (Case c : joueur1_.getComposante()){
+			
+			int score = nombreEtoiles(c);
+
+			if(score1 < score ){
+
+				score1 = score;
+
+			}
+		}
+
+		int score2 = 0;
+
+		for (Case c : joueur2_.getComposante()){
+
+			int score = nombreEtoiles(c);
+
+			if(score2 < score ){
+
+				score2 = score;
+
+			}			
+		}
+		return Math.max(score1,score2);
+	}
+	
 	public boolean relieComposantes(Color couleur)
 	{
 	
@@ -469,28 +510,7 @@ public class Monde
 	{
 		return carte_[position.getY()][position.getX()].getCouleur() != Color.white;
 	}
-	
-	public void miseAJourC(Case c, Joueur joueur)
-	{
-		for(int i = c.getPosition().getX()-1; i<c.getPosition().getX()+1; ++i)
-		{
-			for(int j = c.getPosition().getY()-1; j<c.getPosition().getY()+1; ++j)
-			{
-				if(i < 0 || j < 0 || i >= Constante.N || j >= Constante.N)
-				{
-					if(carte_[i][j].getCouleur() == c.getCouleur() && carte_[i][j] != c)
-					{
-						
-					}
-				}
-			}
-		}
-	}
-		
-	/*public Position donneCaseVideAleatoire(){
-		
-	}*/
-	
+				
 	public void affichage(){
 		for(int i = 0 ; i < Constante.N ; i++ )
 		{

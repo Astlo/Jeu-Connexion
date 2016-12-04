@@ -9,12 +9,14 @@ public  class Joueur
 	private String pseudo_;
 	private Color couleur_;
 	private List<Case> composante_;
+	private boolean abandon_;
 	
 	public Joueur(String pseudo, Color couleur)
 	{
 		pseudo_ = pseudo;
 		couleur_ = couleur;
-		composante_ = new ArrayList<Case>();	
+		composante_ = new ArrayList<Case>();
+		abandon_ = false;
 	}
 
 	public String getPseudo() {
@@ -51,4 +53,18 @@ public  class Joueur
 		composante_.remove(c);
 	}
 
+
+	public boolean getAbandon() {
+		return abandon_;
+	}
+
+	public void setAbandon(boolean abandon) {
+		abandon_ = abandon;
+	}
+
+	public void abandonner()
+	{
+		abandon_ = true;
+	}
+	
 }

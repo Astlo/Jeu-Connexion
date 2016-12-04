@@ -44,15 +44,6 @@ public  class Joueur
 	public void ajouterComposante(Case c)
 	{
 		composante_.add(c);
-		if(c.getPere() != null)
-		{
-			miseAJourComposante(c);			
-		}
-	}
-	
-	public void miseAJourComposante(Case c)
-	{
-	
 	}
 
 }

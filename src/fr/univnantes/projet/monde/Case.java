@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.List;
 import java.util.ArrayList;
 
+import fr.univnantes.projet.Constante;
+
 public class Case {
 	private Position position_;
 	private Color couleur_;
@@ -121,8 +123,46 @@ public class Case {
 		
 		return cpt;
 	}
+	
+	public void analysePeripherieComposante(boolean[][] visitee, ArrayList<Case> peripherie, boolean[][] inaccessible,Case[][] carte)
+	{
+		visitee[position_.getY()][position_.getX()] = true;
+		if(fils_.size()>0){
+			
+			for(Case fils : fils_){
+				System.out.println("wut");
 
-	/*public boolean caseAdjacent(Case autre)
+				fils.analysePeripherieComposante(visitee,peripherie,inaccessible,carte);
+				
+			}		
+		}
+		
+		for (int i = -1; i < 2; ++i)
+		{
+			for( int j = -1; j < 2; ++j)
+			{	
+				int x1 = position_.getX()+i; // abscisse de la case adjacente
+				int y1 = position_.getY()+j; // ordonnée de la case adjacente
+				
+				// on analyse la périphérie de chaque case de la composante
+				if((x1 == position_.getX() && y1 == position_.getY())){
+				} else
+				if((x1 >= 0) && (y1>=0) && (x1 <=Constante.N -1) && (y1<=Constante.N -1) && !visitee[y1][x1] && !inaccessible[y1][x1]){
+					
+					Case adj = carte[y1][x1]; // Case adjacente en cours d'analyse
+					if(adj.getCouleur() == Color.white && !visitee[y1][x1]){
+						visitee[y1][x1] = true;
+						peripherie.add(adj);
+						
+					} else { //optimisable en n'ajoutant pas les cases déjà visitées... et encore la conditionnelle pourrait couter plus que l'opération
+						inaccessible[y1][x1] = true;
+					}
+				}
+			}
+		}
+	}
+
+	public boolean caseAdjacent(Case autre)
 	{
     	boolean test = false;
     	if(position_.getX() == autre.getPosition().getX()-1 || position_.getX() == autre.getPosition().getX() || position_.getX() == autre.getPosition().getX()+1)
@@ -136,7 +176,7 @@ public class Case {
     		}
     	}
     	return test;	
-	}*/
+	}
 	
 	
 	
@@ -148,7 +188,7 @@ public class Case {
     public void ajoutFils(Case c)
     {
     	fils_.add(c);
-    	nbDescendant_ = nbDescendant_ + 1 + c.getNbDescendant();
+    	//nbDescendant_ = nbDescendant_ + 1 + c.getNbDescendant();
     	c.setPere(this);
     }
         
@@ -161,6 +201,7 @@ public class Case {
     		getPere().setNbDescendant(getPere().getNbDescendant() - nbDescendant_);
     		getPere().getFils().remove(this);
     		setPere(racine);
+    		racine.ajoutFils(this);
     	}
     	else
     	{
@@ -169,19 +210,21 @@ public class Case {
     	return racine;
     }
     
-    public void Union(Case c)
+    public void union(Case c)
     {
     	//vérifier la qu'ils sont pas dans la meme classe ou avant
     	if(classe() != c.classe())
     	{
 	    	if(nbDescendant_ > c.getNbDescendant())
 	    	{
-	    		c.setPere(pere_);
+	    		c.setPere(this);
+	    		fils_.add(c);
 	    		nbDescendant_ = nbDescendant_ + 1 + c.getNbDescendant();
 	    	}
 	    	else
 	    	{
 	    		pere_ = c.getPere();
+	    		c.ajoutFils(this);
 	    		c.setNbDescendant(nbDescendant_ + 1 + c.getNbDescendant());
 	    		
 	    	}
@@ -189,7 +232,15 @@ public class Case {
     }
     
 	public String toString(){
-		return position_.toString();
+		String str = "";
+		str = position_.toString();
+		str = str + " ( ";
+		for(Case c : fils_)
+		{
+			str = str + c.toString();
+		}
+		str = str + " ) ";
+		return str;
 	}
 	
 }

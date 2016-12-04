@@ -56,6 +56,28 @@ public class Monde
 		carte_=carte;
 	}
 	
+	public Joueur getJoueur1() {
+		return joueur1_;
+	}
+
+
+	public void setJoueur1(Joueur joueur1) 
+	{
+		joueur1_ = joueur1;
+	}
+
+
+	public Joueur getJoueur2() {
+		return joueur2_;
+	}
+
+
+	public void setJoueur2(Joueur joueur2) 
+	{
+		joueur2_ = joueur2;
+	}
+
+
 	/**
 	 * Initialise le Monde
 	 */
@@ -92,8 +114,7 @@ public class Monde
 			}while(caseOccupee(new Position(colonne, ligne)));
 			carte_[ligne][colonne].setCouleur(joueur1_.getCouleur()); 
 			carte_[ligne][colonne].estEtoile();
-			miseAJour(new Position(colonne, ligne));
-			//joueur1_.ajouterComposante(carte_[ligne][colonne]);
+			miseAJour(new Position(colonne, ligne), joueur1_);
 						
 			do
 			{
@@ -102,12 +123,11 @@ public class Monde
 			}while(caseOccupee(new Position(colonne2, ligne2)));
 			carte_[ligne2][colonne2].setCouleur(joueur2_.getCouleur()); 
 			carte_[ligne2][colonne2].estEtoile();
-			miseAJour(new Position(colonne, ligne));
-			//joueur2_.ajouterComposante(carte_[ligne][colonne]);
+			miseAJour(new Position(colonne2, ligne2), joueur2_);
 		}
 	}
 	
-	public void miseAJour(Position position)
+	public void miseAJour(Position position, Joueur joueur)
 	{
 		int i = position.getY();
 		int j = position.getX();
@@ -119,9 +139,12 @@ public class Monde
 			{
 				if(k >= 0 && l >= 0 && k < Constante.N && l < Constante.N)
 				{
-					if(carte_[k][l].getCouleur() == carte_[i][j].getCouleur() && i != k && j != l)
+					if(carte_[k][l].getCouleur() == carte_[i][j].getCouleur())
 					{
-						casesCandidates.add(carte_[k][l]);
+						if(i != k || j != l)
+						{
+							casesCandidates.add(carte_[k][l]);
+						}
 					}
 					
 				}
@@ -130,63 +153,36 @@ public class Monde
 		if(!casesCandidates.isEmpty())
 		{
 			Collections.sort(casesCandidates, new ComparatorCase());
-			Case c = casesCandidates.get(0);
+			Case c = casesCandidates.get(0);			
 			for(int m = 1 ; m < casesCandidates.size() ; m++)
 			{
-				c.classe();
+				c.union(casesCandidates.get(m).classe());
 			}
-		}
-	}
-	
-	public boolean aCaseAdjacent()
-	{
-		boolean test = false;
-		
-		for(int i = 0 ; i < Constante.N ; i++ )
-		{
-			for(int j = 0 ; j < Constante.N ; j++ )
-			{
-				if(carte_[i][j]){
-					
-				}
-				carte_[i][j] = new Case(new Position(i,j));
-			}
-		}
-		
-		return true;
-	}
-	
-	
-	public void choixCase(Position position, Joueur joueur)
-	{
-		if(caseOccupee(position))
-		{
-			System.out.println("Cette case est déjà occupé, choissisez en une autre.");
-			// demandez autre position
-			Position autre;
-			choixCase(autre, joueur);
+			c.union(carte_[i][j]);
 		}
 		else
 		{
-			colorerCase(position, joueur);
-			joueur.miseAJourChemin(carte_[position.getX()][position.getY()]);
+			joueur.ajouterComposante(carte_[i][j]);
 		}
 	}
-	
-	public void colorerCase(Position position, Joueur joueur)
-	{
-		if(caseOccupee(position))
-		{
+		
+    public void colorerCase(Position position, Joueur joueur)
+    {
+    	if(caseOccupee(position))
+    	{
 			System.out.println("Cette case est déjà occupé, choissisez en une autre.");
-			// demandez autre position
-			//colorerCase(autre ,joueur);
-		}
-		else
-		{
-			carte_[position.getY()][position.getX()].setCouleur(joueur.getCouleur());
-			
-		}
-	}
+    		Scanner sc = new Scanner(System.in);		
+    		int x = sc.nextInt();
+    		int y = sc.nextInt();
+  
+    		colorerCase(new Position(x,y) ,joueur);
+       	}
+    	else
+    	{
+       		carte_[position.getY()][position.getX()].setCouleur(joueur.getCouleur());
+			miseAJour(new Position(position.getX(), position.getY()), joueur2_);
+       	}
+}
 	
 	public void afficheComposante()
 	{
@@ -237,24 +233,144 @@ public class Monde
 		
 	}
 
-		// gros boulot à finir Inondation demander à Ivan en cas d'oublie
-	/*public int relierCasesMin()
+	public int relierCasesMin()
 	{
-
-		Scanner sc = new Scanner(System.in);		
-		int x = sc.nextInt();
-		int y = sc.nextInt();
-
-		Case c1 = carte_[x][y];
+		// variables
+	
+		boolean bloque = false; // vrai si aucun chemin ne mène à la case finale
+		boolean trouve = false; // vrai si la case finale est atteinte
 		
-		int z = sc.nextInt();
-		int t = sc.nextInt();
+		boolean[][] visitee = new boolean[Constante.N][Constante.N];
+		ArrayList<Case> peripherie = new ArrayList<Case>();
+		boolean[][] inaccessible = new boolean[Constante.N][Constante.N];
 
-		Case c2 = carte_[x][y];
+		Scanner c = new Scanner(System.in);		
+		int x = c.nextInt();
+		int y = c.nextInt();
+	
+		Case c1 = carte_[y][x];
 
+		int z = c.nextInt();
+		int t = c.nextInt();
+	
+		c.close();
+		
+		int cpt = 0;
+		
+		// debut inondation
+		
+		visitee[y][x] = true;  // on indique la case de départ comme déjà visitée
+		// et on commence a parcourir sa périphérie
+		
+
+		for (int i = -1; i < 2; ++i)
+		{
+			for( int j = -1; j < 2; ++j)
+			{	
+				int x1 = x+i; // abscisse de la case adjacente
+				int y1 = y+j; // ordonnée de la case adjacente
+				
+				if(x1 == x && y1 == y){    // ne fait rien lorsque la boucle passe sur la case centrale
+					
+				} else
+				if(x1 == z && y1 == t){
+					trouve = true;			// si la case finale se trouve dans la périphérie, fin de l'exec et on renvoie le résultat
+					return cpt;
+				} else
+				if((x1 >= 0) && (y1>=0) && (x1 <=Constante.N-1) && (y1<=Constante.N-1)){
+					
+					Case adj = carte_[y1][x1]; // Case adjacente en cours d'analyse					
+					
+					if(adj.getCouleur() == c1.getCouleur()){
+						
+						adj = adj.getRacine();
+						adj.analysePeripherieComposante(visitee, peripherie, inaccessible, carte_);																				// on analyse les cases en périphérie
+																					// de la case actuelle et on les place
+					} else if (adj.getCouleur() == Color.white){					// dans les tableaux qui correspondent à
+																					// leur statut
+						peripherie.add(adj);										// si on rencontre une composante de la même couleur,
+						visitee[y1][x1] = true;										// alors analysePeripherieComposante analyse toutes les cases
+																					// en périphérie du bloc
+					} else {
+						
+						inaccessible[y1][x1] = true;
+						
+					}
+				}
+			}
+		}
+		if(peripherie.size() == 0){
 			
-		sc.close();
-	}*/
+			bloque = true;
+			
+		} else {
+			cpt++;
+		}
+		
+		ArrayList<Case> peripherie2 = new ArrayList<Case>();
+		while(!trouve && !bloque){
+
+			for(Case caseperiph : peripherie) {
+				
+				for (int i = -1; i < 2; ++i)
+				{
+					for( int j = -1; j < 2; ++j)
+					{	
+						
+						int x1 = caseperiph.getPosition().getX()+i; // abscisse de la case adjacente
+						int y1 = caseperiph.getPosition().getY()+j; // ordonnée de la case adjacente
+
+						if(x1 == z && y1 == t){
+							trouve = true;			// si la case finale se trouve dans la périphérie, fin de l'exec et on renvoie le résultat
+							return cpt;
+						} else
+						if (x1 == caseperiph.getPosition().getX() && y1 == caseperiph.getPosition().getY()){
+							
+						} else
+						if((x1 >= 0) && (y1>=0) && (x1 <=Constante.N-1) && (y1<=Constante.N-1)){ 
+							
+							if(!visitee[y1][x1] && !inaccessible[y1][x1]){
+						
+							Case adj = carte_[y1][x1]; // Case adjacente en cours d'analyse
+								if(adj.getCouleur() == c1.getCouleur()){
+									
+									adj = adj.getRacine();
+									adj.analysePeripherieComposante(visitee, peripherie2, inaccessible, carte_);
+									
+								} else if (adj.getCouleur() == Color.white){
+									
+									peripherie2.add(adj);
+									visitee[y1][x1] = true;
+									
+								} else {
+									
+									inaccessible[y1][x1] = true;
+									
+								}
+							}
+						}
+					}	
+				}
+			}
+			
+			if(peripherie2.size() == 0){
+
+				bloque = true;
+				
+			} else {
+				
+			peripherie = peripherie2;
+			peripherie2 = new ArrayList<Case>();
+			cpt++;
+			
+			}
+		}
+		if(!bloque){
+			return cpt;
+		} else {
+			return -1;
+		}
+	}
 
 	public int nombreEtoiles(){
 		int cpt = 0; // compteur du nombre d'étoiles

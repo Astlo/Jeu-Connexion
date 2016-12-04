@@ -31,10 +31,10 @@ public class Application
 		Grille grille = new Grille(Constante.N, monde);
 		
 		Fenetre fenetre = new Fenetre("Jeu  connexion",grille);
-		
+
 			grille.dessiner();
 			
-		
+
 			
 		
 		

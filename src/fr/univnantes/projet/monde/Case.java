@@ -197,7 +197,7 @@ public class Case {
     	//vérifier la qu'ils sont pas dans la meme classe ou avant
     	if(classe() != c.classe())
     	{
-	    	if(nbDescendant_ > c.getNbDescendant())
+	    	if(nbDescendant_ >= c.getNbDescendant())
 	    	{
 	    		c.setPere(this);
 	    		fils_.add(c);
@@ -210,7 +210,6 @@ public class Case {
 	    		c.ajoutFils(this);
 	    		c.setNbDescendant(nbDescendant_ + 1 + c.getNbDescendant());
 	    		joueur.supprimerComposante(this);
-	    		
 	    	}
     	}
     }

@@ -85,9 +85,9 @@ public class Fenetre extends JFrame implements ActionListener{
 		
 		if(arg0.getSource() == colorer){
 			if(monde_.getNumTour()%2==0){
-				monde_.colorerCase(monde_.getj1());
+				monde_.colorerCase(monde_.getJoueur1());
 			} else {
-				monde_.colorerCase(monde_.getj2());
+				monde_.colorerCase(monde_.getJoueur2());
 			}
 			monde_.setNumTour(monde_.getNumTour()+1);
 			System.out.println("Joueur suivant :");
@@ -116,7 +116,7 @@ public class Fenetre extends JFrame implements ActionListener{
 		}
 		if(arg0.getSource() == Score){
 			
-			monde_.afficheScores();
+			monde_.afficherScores();
 			
 		}
 		if(arg0.getSource() == relieComposantes){
@@ -127,11 +127,11 @@ public class Fenetre extends JFrame implements ActionListener{
 		if(arg0.getSource() == abandon){
 			
 			if(monde_.getNumTour()%2==0){
-				System.out.println("abandon de : " + monde_.getj1().getPseudo());
-				monde_.getj1().abandonner();
+				System.out.println("abandon de : " + monde_.getJoueur1().getPseudo());
+				monde_.getJoueur1().abandonner();
 			} else {
-				System.out.println("abandon de : " + monde_.getj2().getPseudo());
-				monde_.getj2().abandonner();
+				System.out.println("abandon de : " + monde_.getJoueur2().getPseudo());
+				monde_.getJoueur2().abandonner();
 			}
 		colorer.setEnabled(false);
 		abandon.setEnabled(false);	

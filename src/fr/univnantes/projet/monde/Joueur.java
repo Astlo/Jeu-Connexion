@@ -51,6 +51,7 @@ public  class Joueur
 	public void supprimerComposante(Case c)
 	{
 		composante_.remove(c);
+		//System.out.println(composante_.remove(c));
 	}
 
 

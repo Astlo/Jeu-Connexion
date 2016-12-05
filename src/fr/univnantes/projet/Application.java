@@ -31,12 +31,26 @@ public class Application
 		
 		Fenetre fenetre = new Fenetre("Jeu  connexion",grille, monde);
 
-		System.out.println("c'est au joueur " + monde.getJoueur1().getPseudo() + " de jouer.");
+		
+		/*System.out.println("c'est au joueur " + monde.getJoueur1().getPseudo() + " de jouer.");
 		while(monde.ScoreMax() != Constante.K && !moi.getAbandon() && !toi.getAbandon())
 		{
 			grille.dessiner();
 		}
-		System.out.println("fin de la partie !");
+		System.out.println("fin de la partie !");*/
+
+		monde.colorerCase(new Position(0,0), moi);
+		monde.colorerCase(new Position(1,1), moi);
+		monde.colorerCase(new Position(2,2), moi);
+		monde.colorerCase(new Position(3,3), moi);
+		monde.colorerCase(new Position(5,5), moi);
+		monde.colorerCase(new Position(4,4), moi);
+		monde.colorerCase(new Position(7,7), moi);
+		monde.colorerCase(new Position(6,6), moi);
+		System.out.println(moi.getComposante().size());
+		
+		grille.dessiner();
+		
 		return;
 	}
 }

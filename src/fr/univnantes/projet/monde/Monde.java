@@ -165,17 +165,19 @@ public class Monde
 		if(!casesCandidates.isEmpty())
 		{
 			Collections.sort(casesCandidates, new ComparatorCase());
-			Case c = casesCandidates.get(0);			
+			Case c = casesCandidates.get(0);	
+			c.union(carte_[i][j], joueur);
 			for(int m = 1 ; m < casesCandidates.size() ; m++)
 			{
 				c.union(casesCandidates.get(m).classe(), joueur);
 			}
-			c.union(carte_[i][j], joueur);
 		}
 		else
 		{
 			joueur.ajouterComposante(carte_[i][j]);
 		}
+
+		System.out.println(joueur.getComposante().size());
 	}
 		
     public void colorerCase(Joueur joueur)
@@ -195,7 +197,26 @@ public class Monde
        		carte_[y][x].setCouleur(joueur.getCouleur());
 			miseAJour(position, joueur);
        	}
-}
+    }
+    
+    public void colorerCase(Position position, Joueur joueur)
+    {
+    	/*Scanner sc = new Scanner(System.in);		
+		int x = sc.nextInt();
+		int y = sc.nextInt();
+		Position position = new Position(x,y);*/
+    	if(caseOccupee(position))
+    	{
+			System.out.println("Cette case est déjà occupé, choissisez en une autre.");	
+
+    		colorerCase(joueur);
+       	}
+    	else
+    	{
+       		carte_[position.getY()][position.getX()].setCouleur(joueur.getCouleur());
+			miseAJour(position, joueur);
+       	}
+    }
 	
 	public void afficheComposante()
 	{

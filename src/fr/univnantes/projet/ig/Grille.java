@@ -74,7 +74,7 @@ public class Grille extends JPanel {
 		Color couleur = new Color(80,80,80);
 		g2d.setColor(couleur);
 		g2d.fillRect(0,0,cote_,cote_);
-
+		
 		// superposition des couleurs
 		g2d.setXORMode(couleur);
 		

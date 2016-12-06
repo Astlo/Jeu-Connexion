@@ -4,9 +4,9 @@ import java.lang.String;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 
 import fr.univnantes.projet.Constante;
+import fr.univnantes.projet.Input;
 
 import java.awt.Color;
 
@@ -18,14 +18,18 @@ public class Monde
 	private Case[][] carte_;
 	private Joueur joueur1_;
 	private Joueur joueur2_;
+	private int n_;
+	private int k_;
 	private int numTour_;
 
 	/**
 	 * Constructeur
 	 */
-	public Monde(Joueur joueur1, Joueur joueur2)
+	public Monde(Joueur joueur1, Joueur joueur2, int n, int k)
 	{
-		carte_ = new Case[Constante.N][Constante.N+2];
+		n_ = n;
+		k_ = k;
+		carte_ = new Case[n][n];
 		joueur1_ = joueur1;
 		joueur2_ = joueur2;
 		numTour_ = 0;
@@ -58,7 +62,8 @@ public class Monde
 		carte_=carte;
 	}
 	
-	public Joueur getJoueur1() {
+	public Joueur getJoueur1() 
+	{
 		return joueur1_;
 	}
 
@@ -69,7 +74,8 @@ public class Monde
 	}
 
 
-	public Joueur getJoueur2() {
+	public Joueur getJoueur2() 
+	{
 		return joueur2_;
 	}
 
@@ -79,21 +85,47 @@ public class Monde
 		joueur2_ = joueur2;
 	}
 	
-	public int getNumTour() {
+	public int getNumTour() 
+	{
 		return numTour_;
 	}
 
 
-	public void setNumTour(int numTour) {
+	public void setNumTour(int numTour) 
+	{
 		numTour_ = numTour;
 	}
 
 
 
+	public int getN() 
+	{
+		return n_;
+	}
+
+
+	public void setN(int n)
+	{
+		n_ = n;
+	}
+
+	public int getK() 
+	{
+		return k_;
+	}
+
+
+	public void setK(int k) 
+	{
+		k_ = k;
+	}
+
+
 	/**
 	 * Initialise le Monde
 	 */
-	public void creationDuMonde(){
+	public void creationDuMonde()
+	{
 		initialiseCarte();
 		placementInitial();
 	}
@@ -102,9 +134,9 @@ public class Monde
 	 * Initialise le plateau de jeu
 	 */
 	public void initialiseCarte() {
-		for(int i = 0 ; i < Constante.N ; i++ )
+		for(int i = 0 ; i < n_ ; i++ )
 		{
-			for(int j = 0 ; j < Constante.N ; j++ )
+			for(int j = 0 ; j < n_; j++ )
 			{
 				carte_[j][i] = new Case(new Position(i,j));
 			}
@@ -114,14 +146,15 @@ public class Monde
 	/**
 	 * Initialise le début du jeu
 	 */
-	public void placementInitial() {
+	public void placementInitial() 
+	{
 		int ligne, ligne2, colonne, colonne2;
-		for(int i = 0 ; i<Constante.K ; i++)
+		for(int i = 0 ; i<k_ ; i++)
 		{
 			do
 			{
-				ligne = (int)(Math.random() * (Constante.N));
-				colonne = (int)(Math.random() * (Constante.N));
+				ligne = (int)(Math.random() * (n_));
+				colonne = (int)(Math.random() * (n_));
 				
 			}while(caseOccupee(new Position(colonne, ligne)));
 			carte_[ligne][colonne].setCouleur(joueur1_.getCouleur()); 
@@ -130,8 +163,8 @@ public class Monde
 						
 			do
 			{
-				ligne2 = (int)(Math.random() * (Constante.N));
-				colonne2 = (int)(Math.random() * (Constante.N));
+				ligne2 = (int)(Math.random() * (n_));
+				colonne2 = (int)(Math.random() * (n_));
 			}while(caseOccupee(new Position(colonne2, ligne2)));
 			carte_[ligne2][colonne2].setCouleur(joueur2_.getCouleur()); 
 			carte_[ligne2][colonne2].estEtoile();
@@ -149,7 +182,7 @@ public class Monde
 		{
 			for(int l = j-1 ; l <= j+1 ; l++ )
 			{
-				if(k >= 0 && l >= 0 && k < Constante.N && l < Constante.N)
+				if(dansCarte(k, l))
 				{
 					if(carte_[k][l].getCouleur() == carte_[i][j].getCouleur())
 					{
@@ -181,50 +214,35 @@ public class Monde
 	}
 		
     public void colorerCase(Joueur joueur)
-    {
-    	Scanner sc = new Scanner(System.in);		
-		int x = sc.nextInt();
-		int y = sc.nextInt();
+    {		
+		int y = Input.lireLigneDepuisConsole(n_, "");
+		int x = Input.lireColonneDepuisConsole(n_, "");
 		Position position = new Position(x,y);
-    	if(caseOccupee(position))
-    	{
-			System.out.println("Cette case est déjà occupé, choissisez en une autre.");	
-
+		if(dansCarte(x, y))
+		{
+	    	if(caseOccupee(position))
+	    	{
+				System.out.println("Cette case est déjà occupé, choissisez en une autre.");	
+	    		colorerCase(joueur);
+	       	}
+	    	else
+	    	{
+	       		carte_[y][x].setCouleur(joueur.getCouleur());
+				miseAJour(position, joueur);
+	       	}
+		}
+		else
+		{
+			System.out.println("Cette case est hors carte, choissisez en une autre.");	
     		colorerCase(joueur);
-       	}
-    	else
-    	{
-       		carte_[y][x].setCouleur(joueur.getCouleur());
-			miseAJour(position, joueur);
-       	}
-    }
-    
-    public void colorerCase(Position position, Joueur joueur)
-    {
-    	/*Scanner sc = new Scanner(System.in);		
-		int x = sc.nextInt();
-		int y = sc.nextInt();
-		Position position = new Position(x,y);*/
-    	if(caseOccupee(position))
-    	{
-			System.out.println("Cette case est déjà occupé, choissisez en une autre.");	
-
-    		colorerCase(joueur);
-       	}
-    	else
-    	{
-       		carte_[position.getY()][position.getX()].setCouleur(joueur.getCouleur());
-			miseAJour(position, joueur);
-       	}
+		}
     }
 	
 	public void afficheComposante()
 	{
-		Scanner sc = new Scanner(System.in);
-		int x = sc.nextInt();
-		int y = sc.nextInt();
-		sc.close();
-		
+
+		int y = Input.lireLigneDepuisConsole(n_, "");
+		int x = Input.lireColonneDepuisConsole(n_, "");
 		Case parcours = carte_[x][y];
 		
 		if(parcours.getCouleur() != Color.white)
@@ -242,14 +260,13 @@ public class Monde
 	
 	public void existeCheminCases()
 	{
-		Scanner sc = new Scanner(System.in);
-		int x = sc.nextInt();
-		int y = sc.nextInt();
+
+		int y = Input.lireLigneDepuisConsole(n_, "1");
+		int x = Input.lireColonneDepuisConsole(n_, "1");
 		Case case1 = carte_[x][y];
-		x = sc.nextInt();
-		y = sc.nextInt();
+		y = Input.lireLigneDepuisConsole(n_, "2");
+		x = Input.lireColonneDepuisConsole(n_, "2");
 		Case case2 = carte_[x][y];
-		sc.close();
 		
 		if(case1.getCouleur() == case2.getCouleur())
 		{
@@ -262,7 +279,7 @@ public class Monde
 			}
 
 		} else {
-			System.out.println("ça appartient a aucune composante");
+			System.out.println("Les deux cases ne sont pas de la même couleur.");
 		}
 		
 	}
@@ -274,21 +291,18 @@ public class Monde
 		boolean bloque = false; // vrai si aucun chemin ne mène à la case finale
 		boolean trouve = false; // vrai si la case finale est atteinte
 		
-		boolean[][] visitee = new boolean[Constante.N][Constante.N];
+		boolean[][] visitee = new boolean[n_][n_];
 		ArrayList<Case> peripherie = new ArrayList<Case>();
-		boolean[][] inaccessible = new boolean[Constante.N][Constante.N];
+		boolean[][] inaccessible = new boolean[n_][n_];
 
-		Scanner c = new Scanner(System.in);		
-		int x = c.nextInt();
-		int y = c.nextInt();
+		int y = Input.lireLigneDepuisConsole(n_, "1");
+		int x = Input.lireColonneDepuisConsole(n_, "1");
 	
 		Case c1 = carte_[y][x];
 
-		int z = c.nextInt();
-		int t = c.nextInt();
+		int z = Input.lireLigneDepuisConsole(n_, "2");
+		int t = Input.lireColonneDepuisConsole(n_, "2");
 	
-		c.close();
-		
 		int cpt = 0;
 		
 		// debut inondation
@@ -311,7 +325,7 @@ public class Monde
 					trouve = true;			// si la case finale se trouve dans la périphérie, fin de l'exec et on renvoie le résultat
 					return cpt;
 				} else
-				if((x1 >= 0) && (y1>=0) && (x1 <=Constante.N-1) && (y1<=Constante.N-1)){
+				if((x1 >= 0) && (y1>=0) && (x1 <=n_-1) && (y1<=n_-1)){
 					
 					Case adj = carte_[y1][x1]; // Case adjacente en cours d'analyse					
 					
@@ -361,7 +375,7 @@ public class Monde
 						if (x1 == caseperiph.getPosition().getX() && y1 == caseperiph.getPosition().getY()){
 							
 						} else
-						if((x1 >= 0) && (y1>=0) && (x1 <=Constante.N-1) && (y1<=Constante.N-1)){ 
+						if((x1 >= 0) && (y1>=0) && (x1 <=n_-1) && (y1<n_-1)){ 
 							
 							if(!visitee[y1][x1] && !inaccessible[y1][x1]){
 						
@@ -406,15 +420,14 @@ public class Monde
 		}
 	}
 
-	public int nombreEtoiles(){
+	public int nombreEtoiles()
+	{
 		int cpt = 0; // compteur du nombre d'étoiles
 
-		Scanner sc = new Scanner(System.in);		
-		int x = sc.nextInt();
-		int y = sc.nextInt();
-		sc.close();
+		int y = Input.lireLigneDepuisConsole(n_, "");
+		int x = Input.lireColonneDepuisConsole(n_, "");
 
-		Case c1 = carte_[x][y];
+		Case c1 = carte_[y][x];
 		c1 = c1.getRacine();			// en O(h(c1))
 
 		return c1.parcoursEtoile(cpt);  // en têta de n avec n le nombre de noeuds
@@ -422,7 +435,8 @@ public class Monde
 	
 	}
 	
-	public int nombreEtoiles(Case c){
+	public int nombreEtoiles(Case c)
+	{
 
 		int cpt = 0; // compteur du nombre d'étoiles
 	
@@ -439,7 +453,8 @@ public class Monde
 		System.out.println("Score joueur 1 :");
 		int score1 = 0;
 
-		for (Case c : joueur1_.getComposante()){
+		for (Case c : joueur1_.getComposante())
+		{
 
 			int score = nombreEtoiles(c);
 
@@ -472,14 +487,17 @@ public class Monde
 		System.out.println( score2 + " étoiles reliées max");
 	}
 	
-	public int ScoreMax(){
+	public int ScoreMax()
+	{
 		int score1 = 0;
 
-		for (Case c : joueur1_.getComposante()){
+		for (Case c : joueur1_.getComposante())
+		{
 			
 			int score = nombreEtoiles(c);
 
-			if(score1 < score ){
+			if(score1 < score )
+			{
 
 				score1 = score;
 
@@ -488,7 +506,8 @@ public class Monde
 
 		int score2 = 0;
 
-		for (Case c : joueur2_.getComposante()){
+		for (Case c : joueur2_.getComposante())
+		{
 
 			int score = nombreEtoiles(c);
 
@@ -505,18 +524,20 @@ public class Monde
 	{
 	
 		int liaisons = 0;
-		Scanner sc = new Scanner(System.in);		
-		int x = sc.nextInt();
-		int y = sc.nextInt();
-		sc.close();
+
+		int y = Input.lireLigneDepuisConsole(n_, "");
+		int x = Input.lireColonneDepuisConsole(n_, "");
 		
 			for (int i = -1; i < 1; ++i)
 			{
 				for( int j = -1; i < 1; ++j)
 				{
-					if((x+i >= 0) && (y+j>=0) && (x+i <=Constante.N) && (y+j<=Constante.N)){
-						if(carte_[x][y].getCouleur() == couleur){
-
+					if((x+i >= 0) && (y+j>=0) && (x+i <=n_) && (y+j<=n_))
+					{
+						if(carte_[y][x].getCouleur() == couleur)
+						{
+							// TODO Auto-generated method stub
+							// vérifier si les cases sont dans différentes composantes
 							liaisons++;
 						}
 					}
@@ -531,16 +552,84 @@ public class Monde
 	{
 		return carte_[position.getY()][position.getX()].getCouleur() != Color.white;
 	}
+	
+	public boolean dansCarte(int x, int y)
+	{
+		if(x >= 0 && y >= 0 && x < n_ && y < n_)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 				
 	public void affichage(){
-		for(int i = 0 ; i < Constante.N ; i++ )
+		for(int i = 0 ; i < n_ ; i++ )
 		{
-			for(int j = 0 ; j < Constante.N ; j++ )
+			for(int j = 0 ; j < n_ ; j++ )
 			{
 				System.out.print(carte_[i][j]);
 			}
 			System.out.println();
 		}
+	}
+
+	
+	public int getVainqueur(Joueur courant) 
+	{
+		// Déterminer s'il y a un vainqueur.
+		
+		for (Case c : courant.getComposante()) 
+		{
+			if (nombreEtoiles(c) == k_) {
+				return 1;
+			}
+		}
+		if (toutRempli()) {
+			// Le premier a avoir relier le plus d'étoile entre elles l'emporte.
+			int[] nombreEtoiles = new int[Constantes.NOMBRE_JOUEURS];
+			int[] chrono = new int[Constantes.NOMBRE_JOUEURS];
+			for (int couleur = Constantes.ROUGE; couleur <= Constantes.BLEU; couleur++) {
+				for (Composante composante : composantes) {
+					// On recherche la plus grande composante du joueur.
+					if (composante.getCouleur() == couleur && composante.getNombreEtoiles() > nombreEtoiles[couleur]) {
+						nombreEtoiles[couleur] = composante.getNombreEtoiles();
+						chrono[couleur] = composante.getId();
+					}
+				}
+			}
+			if (nombreEtoiles[Constantes.BLEU] > nombreEtoiles[Constantes.ROUGE]) {
+				return Constantes.BLEU;
+			} else if (nombreEtoiles[Constantes.ROUGE] > nombreEtoiles[Constantes.BLEU]) {
+				return Constantes.ROUGE;
+			} else if (nombreEtoiles[Constantes.ROUGE] > 1) {
+				// En cas d'égalité c'est la chronologie qui départage.
+				if (chrono[Constantes.BLEU] > chrono[Constantes.ROUGE]) {
+					return Constantes.ROUGE;
+				} else if (chrono[Constantes.ROUGE] > chrono[Constantes.BLEU]) {
+					return Constantes.BLEU;
+				}
+			}
+		}
+		return 0;
+	}
+	
+	public boolean toutRempli() 
+	{
+		int nbCaseCouleur = 0;
+		for (Case c : joueur1_.getComposante()) 
+		{
+			nbCaseCouleur = nbCaseCouleur + c.getNbDescendant() + 1;
+		}
+
+		for (Case c : joueur2_.getComposante()) 
+		{
+			nbCaseCouleur = nbCaseCouleur + c.getNbDescendant() + 1;
+		}
+		
+		return nbCaseCouleur == n_*n_;
 	}
 	
 }

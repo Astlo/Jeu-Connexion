@@ -14,6 +14,53 @@ import java.awt.Color;
  */
 public class Application 
 {
+	private Monde monde_;
+	
+	private void nouveauDamier(Joueur joueur1, Joueur joueur2, int n, int k) {
+		monde_ = new Monde(joueur1, joueur2, n, k);
+	}
+	
+	private boolean testJeuTermine(Joueur courant) {
+		int vainqueur = monde_.getVainqueur(courant);
+		if(vainqueur == 1)
+		{
+			System.out.println("Le joueur 1 a gagné la partie !");
+			return true;
+		}
+		else if(vainqueur == 2)
+		{
+			System.out.println("Le joueur 2 a gagné la partie !");
+			return true;
+		}
+		return false;
+	}
+	
+	public void joueOrdiHumain()
+	{
+		monde_.creationDuMonde();
+		jouerPartie(true);
+		
+		
+	}
+	
+	public void joueDeuxHumains()
+	{
+		monde_.creationDuMonde();
+		jouerPartie(false);
+		
+	}
+	
+	private void jouerPartie(boolean partieOrdi)
+	{
+		int n = monde_.getN();
+		boolean fini = false;
+		Joueur courant = monde_.getJoueur1();
+
+		while (!fini) {
+			
+		}
+	}
+	
 	/**
 	 * Point d'entrée du programme exécutable
 	 * @param args Paramètre non utilisé
@@ -22,34 +69,28 @@ public class Application
 	{
 		Joueur moi = new Joueur("Keurl",Color.red);
 		Joueur toi = new Joueur("Astlo",Color.blue);
-		//Création d'un monde vide
-		Monde monde = new Monde(moi, toi);
-		//Initialisation du monde
-		monde.creationDuMonde();
-	
-		Grille grille = new Grille(Constante.N, monde);
 		
-		Fenetre fenetre = new Fenetre("Jeu  connexion",grille, monde);
+		try {
+			int n = Input.lireEntierDepuisConsole("Dimension du damier n=", "Entrer un entier compris entre "
+					+ 0 + " et " + 10, 0, 10);
+			int k = Input.lireEntierDepuisConsole("Nombre d'étoiles initiales k=", "Entrer un entier compris entre "
+					+ 0 + " et " + 10, 0, 10);
 
-		
-		/*System.out.println("c'est au joueur " + monde.getJoueur1().getPseudo() + " de jouer.");
-		while(monde.ScoreMax() != Constante.K && !moi.getAbandon() && !toi.getAbandon())
-		{
-			grille.dessiner();
+			Application app = new Application();
+			app.nouveauDamier(moi, toi, n, k);
+			//app.menu();
+		} catch (AbandonException e) {
+			// Sortie du programme demandée.
+			System.err.println(e.getMessage());
 		}
-		System.out.println("fin de la partie !");*/
-
-		monde.colorerCase(new Position(0,0), moi);
-		monde.colorerCase(new Position(1,1), moi);
-		monde.colorerCase(new Position(2,2), moi);
-		monde.colorerCase(new Position(3,3), moi);
-		monde.colorerCase(new Position(5,5), moi);
-		monde.colorerCase(new Position(4,4), moi);
-		monde.colorerCase(new Position(7,7), moi);
-		monde.colorerCase(new Position(6,6), moi);
-		System.out.println(moi.getComposante().size());
 		
-		grille.dessiner();
+		//Création d'un monde vide
+		//Monde monde = new Monde(moi, toi);
+		//Initialisation du monde
+		//monde.creationDuMonde();
+		//Grille grille = new Grille(Constante.N, monde);
+		//Fenetre fenetre = new Fenetre("Jeu  connexion",grille, monde);
+		//grille.dessiner();
 		
 		return;
 	}

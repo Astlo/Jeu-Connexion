@@ -13,6 +13,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import fr.univnantes.projet.monde.Joueur;
 import fr.univnantes.projet.monde.Monde;
 import fr.univnantes.projet.monde.Position;
 /**
@@ -36,14 +38,17 @@ public class Fenetre extends JFrame implements ActionListener{
 	private JButton abandon = new JButton("Abandonner(Alors, on loose ?)");
 	private JButton nouvellePartie = new JButton("Nouvelle Partie !");
 	private Monde monde_;
+	private Joueur courant_;
 	
-	public Fenetre(String titre, JPanel panel, Monde monde) {
+	public Fenetre(String titre, JPanel panel, Monde monde) 
+	{
 		
 		// instanciation de l'instance de JFrame et de son contenu
 
 		
 		super(titre);		
 		monde_ = monde;
+		courant_ = monde_.getJoueur1();
 		Box b = new Box(BoxLayout.PAGE_AXIS);
 		setLayout(new BorderLayout());
 		getContentPane().add(panel, BorderLayout.CENTER);
@@ -86,12 +91,17 @@ public class Fenetre extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent arg0){
 		
 		if(arg0.getSource() == colorer){
-			if(monde_.getNumTour()%2==0){
+			if(courant_ == monde_.getJoueur1()){
 				monde_.colorerCase(monde_.getJoueur1());
+				monde_.testJeuTermine(courant_);
+				courant_ = monde_.getJoueur2();
+				repaint();
 			} else {
 				monde_.colorerCase(monde_.getJoueur2());
+				monde_.testJeuTermine(courant_);
+				courant_ = monde_.getJoueur1();
+				repaint();
 			}
-			monde_.setNumTour(monde_.getNumTour()+1);
 			System.out.println("Joueur suivant :");
 		}
 		if(arg0.getSource() == composante){
@@ -121,29 +131,28 @@ public class Fenetre extends JFrame implements ActionListener{
 			monde_.afficherScores();
 			
 		}
-		if(arg0.getSource() == relieComposantes){
-			
-			monde_.relieComposantes();
+		if(arg0.getSource() == relieComposantes)
+		{
+			if(courant_ == monde_.getJoueur1()){
+				monde_.relieComposantes(monde_.getJoueur1().getCouleur());
+				courant_ = monde_.getJoueur2();
+			} else {
+				monde_.relieComposantes(monde_.getJoueur2().getCouleur());
+				courant_ = monde_.getJoueur1();
+			}	
 			
 		}
 		if(arg0.getSource() == abandon){
 			
-			if(monde_.getNumTour()%2==0){
+			if(courant_ == monde_.getJoueur1()){
 				System.out.println("abandon de : " + monde_.getJoueur1().getPseudo());
-				monde_.getJoueur1().abandonner();
+				//monde_.getJoueur1().abandonner();
 			} else {
 				System.out.println("abandon de : " + monde_.getJoueur2().getPseudo());
-				monde_.getJoueur2().abandonner();
+				//monde_.getJoueur2().abandonner();
 			}
-		colorer.setEnabled(false);
-		abandon.setEnabled(false);	
-		
-		}
-		if(arg0.getSource() == nouvellePartie){
-			
-			
-			
-			
+		//colorer.setEnabled(false);
+		//abandon.setEnabled(false);	
 		}
 	}
 

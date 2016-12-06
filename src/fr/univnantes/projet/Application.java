@@ -2,6 +2,7 @@ package fr.univnantes.projet;
 
 import fr.univnantes.projet.ig.Fenetre;
 import fr.univnantes.projet.ig.Grille;
+import fr.univnantes.projet.ig.Menu;
 import fr.univnantes.projet.monde.Joueur;
 import fr.univnantes.projet.monde.Monde;
 import fr.univnantes.projet.monde.Position;
@@ -52,13 +53,24 @@ public class Application
 	
 	private void jouerPartie(boolean partieOrdi)
 	{
-		int n = monde_.getN();
+		Grille grille = new Grille(monde_.getN(), monde_);
+		Fenetre fenetre = new Fenetre("Jeu  connexion",grille, monde_);
+		//grille.dessiner();
+		
+		/*int n = monde_.getN();
 		boolean fini = false;
 		Joueur courant = monde_.getJoueur1();
 
 		while (!fini) {
 			
-		}
+		}*/
+	}
+	
+	private void menu() 
+	{
+		monde_.initialiseCarte();
+		Grille grille = new Grille(monde_.getN(), monde_);
+		Menu menu = new Menu("Jeu  connexion", grille, this);
 	}
 	
 	/**
@@ -78,7 +90,7 @@ public class Application
 
 			Application app = new Application();
 			app.nouveauDamier(moi, toi, n, k);
-			//app.menu();
+			app.menu();
 		} catch (AbandonException e) {
 			// Sortie du programme demandée.
 			System.err.println(e.getMessage());
@@ -88,8 +100,6 @@ public class Application
 		//Monde monde = new Monde(moi, toi);
 		//Initialisation du monde
 		//monde.creationDuMonde();
-		//Grille grille = new Grille(Constante.N, monde);
-		//Fenetre fenetre = new Fenetre("Jeu  connexion",grille, monde);
 		//grille.dessiner();
 		
 		return;

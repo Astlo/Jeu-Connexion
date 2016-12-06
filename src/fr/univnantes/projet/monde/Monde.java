@@ -20,7 +20,6 @@ public class Monde
 	private Joueur joueur2_;
 	private int n_;
 	private int k_;
-	private int numTour_;
 
 	/**
 	 * Constructeur
@@ -32,7 +31,6 @@ public class Monde
 		carte_ = new Case[n][n];
 		joueur1_ = joueur1;
 		joueur2_ = joueur2;
-		numTour_ = 0;
 	}
 
 
@@ -85,19 +83,6 @@ public class Monde
 		joueur2_ = joueur2;
 	}
 	
-	public int getNumTour() 
-	{
-		return numTour_;
-	}
-
-
-	public void setNumTour(int numTour) 
-	{
-		numTour_ = numTour;
-	}
-
-
-
 	public int getN() 
 	{
 		return n_;
@@ -149,7 +134,7 @@ public class Monde
 	public void placementInitial() 
 	{
 		int ligne, ligne2, colonne, colonne2;
-		for(int i = 0 ; i<k_ ; i++)
+		for(int i = 0 ; i<=k_ ; i++)
 		{
 			do
 			{
@@ -209,8 +194,6 @@ public class Monde
 		{
 			joueur.ajouterComposante(carte_[i][j]);
 		}
-
-		System.out.println(joueur.getComposante().size());
 	}
 		
     public void colorerCase(Joueur joueur)
@@ -587,8 +570,9 @@ public class Monde
 				return 1;
 			}
 		}
-		if (toutRempli()) {
-			// Le premier a avoir relier le plus d'étoile entre elles l'emporte.
+		if (toutRempli()) 
+		{
+			/*// Le premier a avoir relier le plus d'étoile entre elles l'emporte.
 			int[] nombreEtoiles = new int[Constantes.NOMBRE_JOUEURS];
 			int[] chrono = new int[Constantes.NOMBRE_JOUEURS];
 			for (int couleur = Constantes.ROUGE; couleur <= Constantes.BLEU; couleur++) {
@@ -611,9 +595,24 @@ public class Monde
 				} else if (chrono[Constantes.ROUGE] > chrono[Constantes.BLEU]) {
 					return Constantes.BLEU;
 				}
-			}
+			}*/
 		}
 		return 0;
+	}
+	
+	public boolean testJeuTermine(Joueur courant) {
+		int vainqueur = getVainqueur(courant);
+		if(vainqueur == 1)
+		{
+			System.out.println("Le joueur 1 a gagné la partie !");
+			return true;
+		}
+		else if(vainqueur == 2)
+		{
+			System.out.println("Le joueur 2 a gagné la partie !");
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean toutRempli() 

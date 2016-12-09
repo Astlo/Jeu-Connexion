@@ -1,12 +1,8 @@
 package fr.univnantes.projet.ig;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Scanner;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -15,8 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import fr.univnantes.projet.Application;
-import fr.univnantes.projet.monde.Monde;
-import fr.univnantes.projet.monde.Position;
 /**
  * Classe dont les instances sont des fenêtres graphiques
  * dérivées de JFrame.

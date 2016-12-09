@@ -5,7 +5,6 @@ import fr.univnantes.projet.ig.Grille;
 import fr.univnantes.projet.ig.Menu;
 import fr.univnantes.projet.monde.Joueur;
 import fr.univnantes.projet.monde.Monde;
-import fr.univnantes.projet.monde.Position;
 
 import java.awt.Color;
 
@@ -54,16 +53,7 @@ public class Application
 	private void jouerPartie(boolean partieOrdi)
 	{
 		Grille grille = new Grille(monde_.getN(), monde_);
-		Fenetre fenetre = new Fenetre("Jeu  connexion",grille, monde_);
-		//grille.dessiner();
-		
-		/*int n = monde_.getN();
-		boolean fini = false;
-		Joueur courant = monde_.getJoueur1();
-
-		while (!fini) {
-			
-		}*/
+		Fenetre fenetre = new Fenetre("Jeu  connexion",grille, monde_, partieOrdi);
 	}
 	
 	private void menu() 
@@ -84,23 +74,18 @@ public class Application
 		
 		try {
 			int n = Input.lireEntierDepuisConsole("Dimension du damier n=", "Entrer un entier compris entre "
-					+ 0 + " et " + 10, 0, 10);
+					+ 3 + " et " + 10, 3, 10);
 			int k = Input.lireEntierDepuisConsole("Nombre d'étoiles initiales k=", "Entrer un entier compris entre "
-					+ 0 + " et " + 10, 0, 10);
+					+ 2 + " et " + 10, 2, 10);
 
 			Application app = new Application();
+
 			app.nouveauDamier(moi, toi, n, k);
 			app.menu();
 		} catch (AbandonException e) {
 			// Sortie du programme demandée.
 			System.err.println(e.getMessage());
 		}
-		
-		//Création d'un monde vide
-		//Monde monde = new Monde(moi, toi);
-		//Initialisation du monde
-		//monde.creationDuMonde();
-		//grille.dessiner();
 		
 		return;
 	}

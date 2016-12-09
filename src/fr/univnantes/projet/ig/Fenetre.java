@@ -1,12 +1,9 @@
 package fr.univnantes.projet.ig;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Scanner;
+
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -16,7 +13,7 @@ import javax.swing.JPanel;
 
 import fr.univnantes.projet.monde.Joueur;
 import fr.univnantes.projet.monde.Monde;
-import fr.univnantes.projet.monde.Position;
+
 /**
  * Classe dont les instances sont des fenêtres graphiques
  * dérivées de JFrame.
@@ -36,11 +33,11 @@ public class Fenetre extends JFrame implements ActionListener{
 	private JButton Score = new JButton("afficheScores");
 	private JButton relieComposantes = new JButton("relieComposantes");
 	private JButton abandon = new JButton("Abandonner(Alors, on loose ?)");
-	private JButton nouvellePartie = new JButton("Nouvelle Partie !");
 	private Monde monde_;
 	private Joueur courant_;
+	private boolean partieOrdi_;
 	
-	public Fenetre(String titre, JPanel panel, Monde monde) 
+	public Fenetre(String titre, JPanel panel, Monde monde, boolean partieOrdi) 
 	{
 		
 		// instanciation de l'instance de JFrame et de son contenu
@@ -49,6 +46,7 @@ public class Fenetre extends JFrame implements ActionListener{
 		super(titre);		
 		monde_ = monde;
 		courant_ = monde_.getJoueur1();
+		partieOrdi_ = partieOrdi;
 		Box b = new Box(BoxLayout.PAGE_AXIS);
 		setLayout(new BorderLayout());
 		getContentPane().add(panel, BorderLayout.CENTER);
@@ -69,7 +67,6 @@ public class Fenetre extends JFrame implements ActionListener{
 		Score.addActionListener(this);
 		relieComposantes.addActionListener(this);
 		abandon.addActionListener(this);
-		nouvellePartie.addActionListener(this);
 		
 		b.add(colorer);
 		b.add(composante);
@@ -79,7 +76,6 @@ public class Fenetre extends JFrame implements ActionListener{
 		b.add(Score);
 		b.add(relieComposantes);
 		b.add(abandon);
-		b.add(nouvellePartie);
 		
 		getContentPane().add(b, BorderLayout.EAST);
 
@@ -91,18 +87,42 @@ public class Fenetre extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent arg0){
 		
 		if(arg0.getSource() == colorer){
-			if(courant_ == monde_.getJoueur1()){
+			if(courant_ == monde_.getJoueur1())
+			{
 				monde_.colorerCase(monde_.getJoueur1());
 				monde_.testJeuTermine(courant_);
 				courant_ = monde_.getJoueur2();
 				repaint();
-			} else {
-				monde_.colorerCase(monde_.getJoueur2());
-				monde_.testJeuTermine(courant_);
-				courant_ = monde_.getJoueur1();
-				repaint();
+			} 
+			else 
+			{
+				if(partieOrdi_==false)
+				{
+					monde_.colorerCase(monde_.getJoueur2());
+					if (monde_.testJeuTermine(courant_)) {
+						setVisible(false);
+					}
+					else
+					{
+						courant_ = monde_.getJoueur1();
+						repaint();
+					}
+				}
+				else
+				{
+					monde_.colorerCaseAleatoire(monde_.getJoueur2());
+					if (monde_.testJeuTermine(courant_)) {
+						setVisible(false);
+					}
+					else
+					{
+						courant_ = monde_.getJoueur1();
+						repaint();
+					}
+				}
 			}
-			System.out.println("Joueur suivant :");
+			System.out.println();
+			System.out.println("Joueur suivant :" + courant_.getPseudo());
 		}
 		if(arg0.getSource() == composante){
 			
@@ -133,14 +153,8 @@ public class Fenetre extends JFrame implements ActionListener{
 		}
 		if(arg0.getSource() == relieComposantes)
 		{
-			if(courant_ == monde_.getJoueur1()){
-				monde_.relieComposantes(monde_.getJoueur1().getCouleur());
-				courant_ = monde_.getJoueur2();
-			} else {
-				monde_.relieComposantes(monde_.getJoueur2().getCouleur());
-				courant_ = monde_.getJoueur1();
-			}	
-			
+
+			System.out.println(monde_.relieComposantes(courant_.getCouleur()));
 		}
 		if(arg0.getSource() == abandon){
 			
@@ -151,8 +165,8 @@ public class Fenetre extends JFrame implements ActionListener{
 				System.out.println("abandon de : " + monde_.getJoueur2().getPseudo());
 				//monde_.getJoueur2().abandonner();
 			}
-		//colorer.setEnabled(false);
-		//abandon.setEnabled(false);	
+		colorer.setEnabled(false);
+		abandon.setEnabled(false);	
 		}
 	}
 

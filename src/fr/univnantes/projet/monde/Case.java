@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.util.List;
 import java.util.ArrayList;
 
-import fr.univnantes.projet.Constante;
-
 public class Case {
 	private Position position_;
 	private Color couleur_;
@@ -124,7 +122,7 @@ public class Case {
 		return cpt;
 	}
 	
-	public void analysePeripherieComposante(boolean[][] visitee, ArrayList<Case> peripherie, boolean[][] inaccessible,Case[][] carte)
+	public void analysePeripherieComposante(boolean[][] visitee, ArrayList<Case> peripherie, boolean[][] inaccessible,Case[][] carte, int n)
 	{
 		visitee[position_.getY()][position_.getX()] = true;
 		if(fils_.size()>0){
@@ -132,7 +130,7 @@ public class Case {
 			for(Case fils : fils_){
 				System.out.println("wut");
 
-				fils.analysePeripherieComposante(visitee,peripherie,inaccessible,carte);
+				fils.analysePeripherieComposante(visitee,peripherie,inaccessible,carte, n);
 				
 			}		
 		}
@@ -147,7 +145,7 @@ public class Case {
 				// on analyse la périphérie de chaque case de la composante
 				if((x1 == position_.getX() && y1 == position_.getY())){
 				} else
-				if((x1 >= 0) && (y1>=0) && (x1 <=Constante.N -1) && (y1<=Constante.N -1) && !visitee[y1][x1] && !inaccessible[y1][x1]){
+				if((x1 >= 0) && (y1>=0) && (x1 <=n -1) && (y1<=n -1) && !visitee[y1][x1] && !inaccessible[y1][x1]){
 					
 					Case adj = carte[y1][x1]; // Case adjacente en cours d'analyse
 					if(adj.getCouleur() == Color.white && !visitee[y1][x1]){

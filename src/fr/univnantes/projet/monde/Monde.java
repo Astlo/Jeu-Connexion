@@ -1,11 +1,9 @@
 package fr.univnantes.projet.monde;
 
-import java.lang.String;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fr.univnantes.projet.Constante;
 import fr.univnantes.projet.Input;
 
 import java.awt.Color;
@@ -134,7 +132,7 @@ public class Monde
 	public void placementInitial() 
 	{
 		int ligne, ligne2, colonne, colonne2;
-		for(int i = 0 ; i<=k_ ; i++)
+		for(int i = 0 ; i<k_ ; i++)
 		{
 			do
 			{
@@ -200,6 +198,8 @@ public class Monde
     {		
 		int y = Input.lireLigneDepuisConsole(n_, "");
 		int x = Input.lireColonneDepuisConsole(n_, "");
+		x--;
+		y--;
 		Position position = new Position(x,y);
 		if(dansCarte(x, y))
 		{
@@ -220,12 +220,29 @@ public class Monde
     		colorerCase(joueur);
 		}
     }
+    
+    public void colorerCaseAleatoire(Joueur joueur)
+    {		
+    	int x,y;
+		do
+		{
+			x = (int)(Math.random() * (n_));
+			y = (int)(Math.random() * (n_));
+			
+		}while(caseOccupee(new Position(y, x)));
+		Position position = new Position(x,y);
+		carte_[y][x].setCouleur(joueur.getCouleur());
+		miseAJour(position, joueur);
+	    
+    }
 	
 	public void afficheComposante()
 	{
 
-		int y = Input.lireLigneDepuisConsole(n_, "");
-		int x = Input.lireColonneDepuisConsole(n_, "");
+		int x = Input.lireLigneDepuisConsole(n_, "");
+		int y = Input.lireColonneDepuisConsole(n_, "");
+		x--;
+		y--;
 		Case parcours = carte_[x][y];
 		
 		if(parcours.getCouleur() != Color.white)
@@ -244,11 +261,15 @@ public class Monde
 	public void existeCheminCases()
 	{
 
-		int y = Input.lireLigneDepuisConsole(n_, "1");
-		int x = Input.lireColonneDepuisConsole(n_, "1");
+		int x = Input.lireLigneDepuisConsole(n_, "1");
+		int y = Input.lireColonneDepuisConsole(n_, "1");
+		x--;
+		y--;
 		Case case1 = carte_[x][y];
-		y = Input.lireLigneDepuisConsole(n_, "2");
-		x = Input.lireColonneDepuisConsole(n_, "2");
+		x = Input.lireLigneDepuisConsole(n_, "2");
+		y = Input.lireColonneDepuisConsole(n_, "2");
+		x--;
+		y--;
 		Case case2 = carte_[x][y];
 		
 		if(case1.getCouleur() == case2.getCouleur())
@@ -278,13 +299,17 @@ public class Monde
 		ArrayList<Case> peripherie = new ArrayList<Case>();
 		boolean[][] inaccessible = new boolean[n_][n_];
 
-		int y = Input.lireLigneDepuisConsole(n_, "1");
-		int x = Input.lireColonneDepuisConsole(n_, "1");
+		int x = Input.lireLigneDepuisConsole(n_, "1");
+		int y = Input.lireColonneDepuisConsole(n_, "1");
+		x--;
+		y--;
 	
-		Case c1 = carte_[y][x];
+		Case c1 = carte_[x][y];
 
 		int z = Input.lireLigneDepuisConsole(n_, "2");
 		int t = Input.lireColonneDepuisConsole(n_, "2");
+		z--;
+		t--;
 	
 		int cpt = 0;
 		
@@ -315,7 +340,7 @@ public class Monde
 					if(adj.getCouleur() == c1.getCouleur()){
 						
 						adj = adj.getRacine();
-						adj.analysePeripherieComposante(visitee, peripherie, inaccessible, carte_);																				// on analyse les cases en périphérie
+						adj.analysePeripherieComposante(visitee, peripherie, inaccessible, carte_, n_);																				// on analyse les cases en périphérie
 																					// de la case actuelle et on les place
 					} else if (adj.getCouleur() == Color.white){					// dans les tableaux qui correspondent à
 																					// leur statut
@@ -366,7 +391,7 @@ public class Monde
 								if(adj.getCouleur() == c1.getCouleur()){
 									
 									adj = adj.getRacine();
-									adj.analysePeripherieComposante(visitee, peripherie2, inaccessible, carte_);
+									adj.analysePeripherieComposante(visitee, peripherie2, inaccessible, carte_, n_);
 									
 								} else if (adj.getCouleur() == Color.white){
 									
@@ -407,10 +432,12 @@ public class Monde
 	{
 		int cpt = 0; // compteur du nombre d'étoiles
 
-		int y = Input.lireLigneDepuisConsole(n_, "");
-		int x = Input.lireColonneDepuisConsole(n_, "");
+		int x = Input.lireLigneDepuisConsole(n_, "");
+		int y = Input.lireColonneDepuisConsole(n_, "");
+		x--;
+		y--;
 
-		Case c1 = carte_[y][x];
+		Case c1 = carte_[x][y];
 		c1 = c1.getRacine();			// en O(h(c1))
 
 		return c1.parcoursEtoile(cpt);  // en têta de n avec n le nombre de noeuds
@@ -505,29 +532,47 @@ public class Monde
 	
 	public boolean relieComposantes(Color couleur)
 	{
-	
-		int liaisons = 0;
-
 		int y = Input.lireLigneDepuisConsole(n_, "");
 		int x = Input.lireColonneDepuisConsole(n_, "");
-		
-			for (int i = -1; i < 1; ++i)
+		x--;
+		y--;
+		List<Case> composante = new ArrayList<Case>();
+		if(carte_[y][x].getCouleur() == Color.white){
+			for (int i = -1; i <= 1; ++i)
 			{
-				for( int j = -1; i < 1; ++j)
+				for( int j = -1; j <= 1; ++j)
 				{
-					if((x+i >= 0) && (y+j>=0) && (x+i <=n_) && (y+j<=n_))
+					System.out.println(i + " " + j);
+					if(dansCarte(x+i,y+j))
 					{
-						if(carte_[y][x].getCouleur() == couleur)
+						if(carte_[y+j][x+i].getCouleur() == couleur)
 						{
-							// TODO Auto-generated method stub
-							// vérifier si les cases sont dans différentes composantes
-							liaisons++;
+							System.out.println("test3");
+							if(composante.size() != 0)
+							{
+								for(Case c : new ArrayList<Case>(composante))
+								{
+									System.out.println("test6");
+									if(c.getRacine() != carte_[y+j][x+i].getRacine())
+									{
+										System.out.println("test5");
+										composante.add(carte_[y+j][x+i]);
+									}
+								}
+							}
+							else
+							{
+								System.out.println("test4");
+								composante.add(carte_[y+j][x+i]);
+							}
 						}
 					}
 				}	
 			}
+		}
+		
 			
-		return (liaisons >= 2);
+		return (composante.size() >= 2);
 	
 	}
 
@@ -563,39 +608,45 @@ public class Monde
 	public int getVainqueur(Joueur courant) 
 	{
 		// Déterminer s'il y a un vainqueur.
-		
 		for (Case c : courant.getComposante()) 
 		{
 			if (nombreEtoiles(c) == k_) {
-				return 1;
+				if(courant == joueur1_)
+				{
+					return 1;
+				} 
+				else
+				{
+					return 2;
+				}
 			}
 		}
 		if (toutRempli()) 
 		{
-			/*// Le premier a avoir relier le plus d'étoile entre elles l'emporte.
-			int[] nombreEtoiles = new int[Constantes.NOMBRE_JOUEURS];
-			int[] chrono = new int[Constantes.NOMBRE_JOUEURS];
-			for (int couleur = Constantes.ROUGE; couleur <= Constantes.BLEU; couleur++) {
-				for (Composante composante : composantes) {
-					// On recherche la plus grande composante du joueur.
-					if (composante.getCouleur() == couleur && composante.getNombreEtoiles() > nombreEtoiles[couleur]) {
-						nombreEtoiles[couleur] = composante.getNombreEtoiles();
-						chrono[couleur] = composante.getId();
-					}
+			int maximum1 = 0;
+			int maximum2 = 0;
+			for (Case c : joueur1_.getComposante()) 
+			{
+				if(c.getNbDescendant() > maximum1)
+				{
+					maximum1 = c.getNbDescendant();
 				}
 			}
-			if (nombreEtoiles[Constantes.BLEU] > nombreEtoiles[Constantes.ROUGE]) {
-				return Constantes.BLEU;
-			} else if (nombreEtoiles[Constantes.ROUGE] > nombreEtoiles[Constantes.BLEU]) {
-				return Constantes.ROUGE;
-			} else if (nombreEtoiles[Constantes.ROUGE] > 1) {
-				// En cas d'égalité c'est la chronologie qui départage.
-				if (chrono[Constantes.BLEU] > chrono[Constantes.ROUGE]) {
-					return Constantes.ROUGE;
-				} else if (chrono[Constantes.ROUGE] > chrono[Constantes.BLEU]) {
-					return Constantes.BLEU;
+			for (Case c : joueur2_.getComposante()) 
+			{
+				if(c.getNbDescendant() > maximum2)
+				{
+					maximum2 = c.getNbDescendant();
 				}
-			}*/
+			}
+			if(maximum1 == maximum2 || maximum1 > maximum2)
+			{
+				return 1;
+			}
+			else
+			{
+				return 2;
+			}
 		}
 		return 0;
 	}
@@ -604,7 +655,7 @@ public class Monde
 		int vainqueur = getVainqueur(courant);
 		if(vainqueur == 1)
 		{
-			System.out.println("Le joueur 1 a gagné la partie !");
+			System.out.println("Le joueur courant a gagné la partie !");
 			return true;
 		}
 		else if(vainqueur == 2)

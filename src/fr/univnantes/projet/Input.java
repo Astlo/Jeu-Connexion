@@ -37,7 +37,7 @@ public final class Input {
 				ERR.println(messageErreur);
 			}
 		}
-		return n-1;
+		return n;
 	}
 
 	public static int lireLigneDepuisConsole(int n, String suffixe) {

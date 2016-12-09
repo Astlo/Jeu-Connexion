@@ -655,12 +655,12 @@ public class Monde
 		int vainqueur = getVainqueur(courant);
 		if(vainqueur == 1)
 		{
-			System.out.println("Le joueur courant a gagné la partie !");
+			System.out.println("Le joueur " + courant.getPseudo() + " a gagné la partie !");
 			return true;
 		}
 		else if(vainqueur == 2)
 		{
-			System.out.println("Le joueur 2 a gagné la partie !");
+			System.out.println("Le joueur " + courant.getPseudo() + " a gagné la partie !");
 			return true;
 		}
 		return false;
